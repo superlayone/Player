@@ -12,7 +12,7 @@
     <title>Web player Based on Bootstrap3.0</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- Bootstrap datetimepicker -->
@@ -56,57 +56,73 @@
     </div>
 
     <div class="container theme-showcase">
+        <div class="page-header">
+          <h1>Video on Demand</h1>
+        </div>
         <div class="playerbody center-block">
-            <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" onended="core.playEnded()"
+            <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
               controls preload="auto" width="800" height="400"
-              data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'>
+              data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'
+              onended="core.playEnded()"
+              onwaiting="core.playWaiting()"
+              onplaying="core.playPlaying()"
+              onpause="core.playPaused()">
              <source src="" type='video/mp4' />
             </video>
         </div>
-        <div class="page-header">
-          <h1>Time interval</h1>
+        <div class="panel panel-info">
+          <div class="panel-heading">Status</div>
+          <div class="panel-body">
+            <div class="panel">
+              <form class="form-inline" role="form">
+                  <div class="form-group">
+                    <img id="statusImg" src="">
+                  </div>
+                  <div class="form-group">
+                    <p id="statusStr"></p>
+                  </div>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
+              </form>
+            </div>
+          </div>
         </div>
-        <!--Start time-->
-        <div class="well">
-          <form class="form-inline" role="form">
-            <button type="button" class="btn btn-success" disabled="disabled">开始时间</button>
-            <div class="form-group">
-              <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="startYearMonthDay">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Time Interval</div>
+          <div class="panel-body">
+            <!--Start time-->
+            <div class="panel">
+              <form class="form-inline" role="form">
+                  <button type="button" class="btn btn-success" disabled="disabled">开始时间</button>
+                  <div class="form-group">
+                    <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="startYYYYMMDDHHII">
+                  </div>
+                  <button type="button" class="btn btn-success" disabled="disabled">:</button>
+                  <div class="form-group">
+                    <input size="5" type="number" class="form-control" id="startSec"  max="59" min="0" value="0" >
+                  </div>
+              </form>
             </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="startHour" placeholder="hour">
+            <!--End time-->
+            <div class="panel">
+              <form class="form-inline" role="form">
+                  <button type="button"  class="btn btn-danger" disabled="disabled">结束时间</button>
+                  <div class="form-group">
+                    <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="endYYYYMMDDHHII">
+                  </div>
+                  <button type="button"  class="btn btn-danger" disabled="disabled">:</button>
+                  <div class="form-group">
+                    <input size="5" type="number" class="form-control" id="endSec"  max="59" min="0" value="0">
+                  </div>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doPlay()">播放</button>
+                  
+              </form>
             </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="startMin" placeholder="min">
-            </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="startSec" placeholder="sec">
-            </div>
-          </form>
         </div>
-        <!--End time-->
-        <div class="well">
-          <form class="form-inline" role="form">
-            <button type="button"  class="btn btn-danger" disabled="disabled">结束时间</button>
-            <div class="form-group">
-              <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="endYearMonthDay">
-            </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="endHour" placeholder="hour">
-            </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="endMin" placeholder="min">
-            </div>
-            <div class="form-group">
-              <input size="5" type="text" class="form-control" id="endSec" placeholder="sec">
-            </div>
-            <button type="button"  class="btn btn-primary pull-right" onclick="core.doPlay()">播放</button>
-          </form>
         </div>
         <div class="page-header">
           <h1>Conditions and Limitations</h1>
         </div>
-        <div class="well">
+        <div class="alert alert-danger">
           <p>(A) No Trademark License.This license does not grant you rights to use any contributors' name, logo, or trademarks.</p>
           <p>(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.</p>
           <p>(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.</p>
@@ -114,22 +130,18 @@
           <p>(E) Layone hold the master version.</p>
           
         </div>
-
-
     </div> <!-- /container -->
-
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <!--For jquery -->
+    <script src="js/jquery.min.js" charset="UTF-8"></script>
     <!--For bootstarp -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/holder.min.js"></script>
-    <!--For jquery -->
-    <script src="js/jquery.min.js" charset="UTF-8"></script>
     <!--For bootstarp datetime picker -->
-    <script src="js/jquery-1.8.3.min.js" charset="UTF-8"></script>
-    <script src="js/bootstrap-datetimepicker.js"></script>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <!--For video core js-->
     <script src="video/video.js"></script>
@@ -138,15 +150,19 @@
     <!--For define datatime picker style -->
     <script type="text/javascript">
     $(".form_datetime").datetimepicker({
-        format: "yyyymmdd",
+        format: "yyyymmddhhii",
         language:"zh-CN",
         autoclose: true,
         todayBtn: true,
         todayHighlight: 1,
-        startView: 2,
-        minView: 2,
         pickerPosition: "bottom-left",
         startDate: "2013-12-01",
+        pickDate: true,
+        pickTime: true,
+        hourStep: 1,
+        minuteStep: 1,
+        secondStep: 1,
+        inputMask: true
     });
     </script> 
     <!--For document ready-->
@@ -156,6 +172,7 @@
         $(document).ready(function(){
           //initial something...
           core.getPlayerId("vjsplayer");
+          core.getStatusId("statusImg","statusStr");
       });
     </script>
   </body>

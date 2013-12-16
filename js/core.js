@@ -17,9 +17,25 @@ This software is written by Layone!
 var core = {
 	playerId:""
 	,playerInstance:""
+	,statusImg:""
+	,statusStr:""
 	//when track ended to fire up
 	,playEnded:function() {
 		//alert(playlist);
+		this.statusImg.src = "img/pause.png";
+		this.statusStr.innerHTML = "Ended";
+	}
+	,playPaused:function () {
+		this.statusImg.src = "img/pause.png";
+		this.statusStr.innerHTML = "Paused";
+	}
+	,playWaiting:function () {
+		this.statusImg.src = "img/pause.png";
+		this.statusStr.innerHTML = "Waiting";
+	}
+	,playPlaying:function () {
+		this.statusImg.src = "img/play.gif";
+		this.statusStr.innerHTML = "Playing";
 	}
 	//inititally get the playerId
 	,getPlayerId:function (replacePlayerId) {
@@ -27,164 +43,108 @@ var core = {
 		this.playerId = replacePlayerId;
 		this.playerInstance = videojs(replacePlayerId);	
 	}
+	,getStatusId:function (statusImgId,statusStrId) {
+		this.statusImg = document.getElementById(statusImgId);
+		this.statusStr = document.getElementById(statusStrId);
+	}
 	//as it shows,it just play
 	,doPlay:function (){
-		//http://127.0.0.1/1.mp4
 		//play this url
 		this.playerInstance.src("http://127.0.0.1/2.mp4");
 		//play it
 		this.playerInstance.play();
-		this.getDatetimepickerStr("startYearMonthDay","startHour","startMin","startSec","endYearMonthDay","endHour","endMin","endSec");
+		/*Debug info
+		//this.getDatetimepickerStr("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
+		*/
 	}
-	,getDatetimepickerStr:function (startDateId,startHourId,startMinId,startSecId,endDateId,endHourId,endMinId,endSecId) {
-		// define container
-		var startTimeStamp ;
-		var endTimeStamp ;
-		//define local start
-		var receivedStartDate = this.getStartDate(startDateId);
-		var receivedStartHour = this.getStartHour(startHourId);
-		var receivedStartMin = this.getStartMin(startMinId);
-		var receivedStartSec = this.getStartSec(startSecId);
-		//define local end
-		var receivedEndDate = this.getEndDate(endDateId);
-		var receivedEndHour = this.getEndHour(endHourId);
-		var receivedEndMin = this.getEndMin(endMinId);
-		var receivedEndSec = this.getEndSec(endSecId);
-		if(receivedStartDate < receivedEndDate)
-		{
-			//In such a case,sign these
-			startTimeStamp = receivedStartDate+receivedStartHour+receivedStartMin+receivedStartSec;
-			endTimeStamp = receivedEndDate+receivedEndHour+receivedEndMin+receivedEndSec;
-		}else if(receivedStartDate == receivedEndDate){
-			//In such a case,in the same day
-			if(receivedStartHour < receivedEndHour){
-				startTimeStamp = receivedStartDate+receivedStartHour+receivedStartMin+receivedStartSec;
-				endTimeStamp = receivedEndDate+receivedEndHour+receivedEndMin+receivedEndSec;
-			}else if(receivedStartHour == receivedEndHour){
-				//In such a case,in the same hour 
-				if(receivedStartMin < receivedEndMin){
-					startTimeStamp = receivedStartDate+receivedStartHour+receivedStartMin+receivedStartSec;
-					endTimeStamp = receivedEndDate+receivedEndHour+receivedEndMin+receivedEndSec;
-				}else if(receivedStartMin == receivedEndMin){
-					//In such a case,at the same minutes
-					if(receivedStartSec < receivedEndSec){
-						//In such a case,the start seconds must smaller than the end one,at least!
-						startTimeStamp = receivedStartDate+receivedStartHour+receivedStartMin+receivedStartSec;
-						endTimeStamp = receivedEndDate+receivedEndHour+receivedEndMin+receivedEndSec;
-					}
-					else{
-						alert("请输入合法的秒钟区间！");
-					}
-				}
-				else{
-					alert("请输入合法的分钟区间！");
-				}
+	,doDownload:function () {
+		/*
+		//hide this feature temporarily
+		this.statusImg.src = "img/loading.gif";
+		this.statusStr.innerHTML = "Downloading...";
+		*/
+	}
+	,downloadCompleted:function () {
+		// body...
+		/*
+		//hide this feature temporarily
+		this.statusImg.src = "img/downloaded.png";
+		this.statusStr.innerHTML = "Download completed...";
+		*/
+	}
+	//get selected date info
+	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId) {
+		var receivedStartYYYYMMDDHHII = this.getStartYYYYMMDDHHII(startYYYYMMDDHHIIId);
+		var receivedEndYYYYMMDDHHII = this.getEndYYYYMMDDHHII(endYYYYMMDDHHIIId);
+		if(receivedStartYYYYMMDDHHII !='0' && receivedEndYYYYMMDDHHII !='0'){
+			var receivedStartDateStr = receivedStartYYYYMMDDHHII+this.getStartSec(startSecId);
+			var receivedEndDateStr = receivedEndYYYYMMDDHHII+this.getEndSec(endSecId);
+			//alert(receivedStartDateStr+"-->"+receivedEndDateStr);
+			if(receivedStartDateStr < receivedEndDateStr){
+				//The end time stamp must gteater than the start one
+				//Construct a request url here,and do request
+			}else{
+				alert("请输入合法的日期区间！");
 			}
-			else{
-				alert("请输入合法的小时区间！");
-			}
-		}
-		else{
+		}else{
 			alert("请输入合法的日期区间！");
 		}
 		
-		//alert(startTimeStamp+'-'+endTimeStamp);
 	}
-	,getStartDate:function (replaceDateId) {
+	,getStartYYYYMMDDHHII:function (replaceStartYYYYMMDDHHIIId) {
 		// body...
-		var receivedStartDate = $('#'+replaceDateId).val();
-		if(receivedStartDate !=""){
-			return receivedStartDate;
+		var receivedStartYYYYMMDDHHII = $('#'+replaceStartYYYYMMDDHHIIId).val();
+		if(receivedStartYYYYMMDDHHII !=""){
+			return receivedStartYYYYMMDDHHII;
 		}else{
 			alert("请选择起始日期！");
+			//return a invalid value
+			return '0';
 		}
 	}
-	,getStartHour:function (replaceHourId) {
+	,getStartSec:function (replaceStartSecId) {
 		// body...
-		var receivedStartHour = $('#'+replaceHourId).val();
-		if(receivedStartHour >= 0 && receivedStartHour <= 23){
-			if(receivedStartHour < 10){
-				//Format the string to %2d
-				return '0'+receivedStartHour;
-			}else{
-				return receivedStartHour;
-			}
-		}else{
-			alert("请输入正确的起始小时时间！");
-		}
-	}
-	,getStartMin:function (replaceMinId) {
-		// body...
-		var receivedStartMin = $('#'+replaceMinId).val();
-		if(receivedStartMin >= 0 && receivedStartMin <= 59){
-			if(receivedStartMin < 10){
-				return '0'+receivedStartMin;
-			}else{
-				return receivedStartMin;
-			}
-		}else{
-			alert("请输入正确的起始分钟时间！");
-		}
-	}
-	,getStartSec:function (replaceSecId) {
-		// body...
-		var receivedStartSec = $('#'+replaceSecId).val();
-		if(receivedStartSec >= 0 && receivedStartSec <= 59){
+		var receivedStartSec = $('#'+replaceStartSecId).val();
+		/*
+		Format return value to %2d
+		*/
+		if(receivedStartSec >=0 && receivedStartSec <=59){
 			if(receivedStartSec <10){
 				return '0'+receivedStartSec;
 			}else{
 				return receivedStartSec;
 			}
 		}else{
-			alert("请输入正确的起始秒钟时间！");
+			document.getElementById(replaceStartSecId).value= 0;
+			alert("请输入合法的秒钟值，该值已恢复至默认！");
+			//return default value
+			return '00';
 		}
+		
 	}
-	,getEndDate:function (replaceDateId) {
+	,getEndYYYYMMDDHHII:function (replaceEndYYYYMMDDHHIIId) {
 		// body...
-		var receivedEndDate = $('#'+replaceDateId).val();
-		if(receivedEndDate !=""){
-			return receivedEndDate;
+		var receivedEndYYYYMMDDHHII = $('#'+replaceEndYYYYMMDDHHIIId).val();
+		if(receivedEndYYYYMMDDHHII !=""){
+			return receivedEndYYYYMMDDHHII;
 		}else{
 			alert("请选择结束日期！");
+			return '0';
 		}
 	}
-	,getEndHour:function (replaceHourId) {
+	,getEndSec:function (replaceEndSecId) {
 		// body...
-		var receivedEndHour = $('#'+replaceHourId).val();
-		if(receivedEndHour >= 0 && receivedEndHour <= 23){
-			if(receivedEndHour <10){
-				return '0'+receivedEndHour;
-			}else{
-				return receivedEndHour;
-			}
-		}else{
-			alert("请输入正确的结束小时时间！");
-		}
-	}
-	,getEndMin:function (replaceMinId) {
-		// body...
-		var receivedEndMin = $('#'+replaceMinId).val();
-		if(receivedEndMin >= 0 && receivedEndMin <= 59){
-			if(receivedEndMin <10){
-				return '0'+receivedEndMin;
-			}else{
-				return receivedEndMin;
-			}
-		}else{
-			alert("请输入正确的结束分钟时间！");
-		}
-	}
-	,getEndSec:function (replaceSecId) {
-		// body...
-		var receivedEndSec = $('#'+replaceSecId).val();
-		if(receivedEndSec >= 0 && receivedEndSec <= 59){
+		var receivedEndSec = $('#'+replaceEndSecId).val();
+		if(receivedEndSec >=0 && receivedEndSec <=59){
 			if(receivedEndSec <10){
 				return '0'+receivedEndSec;
 			}else{
 				return receivedEndSec;
 			}
 		}else{
-			alert("请输入正确的结束秒钟时间！");
+			document.getElementById(replaceEndSecId).value= 0;
+			alert("请输入合法的秒钟值，该值已恢复至默认！");
+			return '00';
 		}
 	}
 }
