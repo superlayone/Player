@@ -41,7 +41,7 @@
 	<div class="playerbody center-block">
             <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
               controls preload="auto" width="800" height="400"
-              data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'
+              data-setup='{}'
               onended="core.playEnded()"
               onwaiting="core.playWaiting()"
               onplaying="core.playPlaying()"

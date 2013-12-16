@@ -378,11 +378,11 @@ easily in the skin designer. http://designer.videojs.com/
   /* background-color-with-alpha */
   background-color: #07141e;
   background-color: rgba(7, 20, 30, 0.7);
-  border: 0.1em solid #3b4249;
+  border: none;
   /* border-radius */
-  -webkit-border-radius: 0.8em;
-  -moz-border-radius: 0.8em;
-  border-radius: 0.8em;
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
   /* box-shadow */
   -webkit-box-shadow: 0px 0px 1em rgba(255, 255, 255, 0.25);
   -moz-box-shadow: 0px 0px 1em rgba(255, 255, 255, 0.25);
@@ -421,7 +421,7 @@ easily in the skin designer. http://designer.videojs.com/
   border-color: #fff;
   /* IE8 needs a non-glow hover state */
   background-color: #505050;
-  background-color: rgba(50, 50, 50, 0.75);
+  background-color: rgba(50, 50, 50, 0.5);
   /* box-shadow */
   -webkit-box-shadow: 0 0 3em #ffffff;
   -moz-box-shadow: 0 0 3em #ffffff;
@@ -468,7 +468,7 @@ easily in the skin designer. http://designer.videojs.com/
   animation: spin 1.5s infinite linear;
 }
 .vjs-default-skin .vjs-loading-spinner:before {
-  content: "\e01e";
+  content: "\e00a";
   font-family: VideoJS;
   position: absolute;
   top: 0;

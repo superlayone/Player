@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <!--link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"-->
 
-    <title>Web player Based on Bootstrap3.0</title>
+    <title>VOD Test</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -21,6 +21,10 @@
     <link href="css/theme.css" rel="stylesheet">
     <!--video css-->
     <link href="video/video-js.css" rel="stylesheet">
+    <!--Flash SWF-->
+    <script>
+      videojs.options.flash.swf = "video/video-js.swf";
+    </script>
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -57,12 +61,13 @@
 
     <div class="container theme-showcase">
         <div class="page-header">
-          <h1>Video on Demand</h1>
+          <h2>Video on Demand</h2>
         </div>
         <div class="playerbody center-block">
             <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
               controls preload="auto" width="800" height="400"
-              data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'
+              poster="img/default_poster2.jpg"
+              data-setup='{}'
               onended="core.playEnded()"
               onwaiting="core.playWaiting()"
               onplaying="core.playPlaying()"
@@ -76,7 +81,7 @@
             <div class="panel">
               <form class="form-inline" role="form">
                   <div class="form-group">
-                    <img id="statusImg" src="">
+                    <img id="statusImg" src="img/placeholder.png">
                   </div>
                   <div class="form-group">
                     <p id="statusStr"></p>
@@ -120,7 +125,7 @@
         </div>
         </div>
         <div class="page-header">
-          <h1>Conditions and Limitations</h1>
+          <h2>Conditions and Limitations</h2>
         </div>
         <div class="alert alert-danger">
           <p>(A) No Trademark License.This license does not grant you rights to use any contributors' name, logo, or trademarks.</p>
