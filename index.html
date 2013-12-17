@@ -21,10 +21,10 @@
     <link href="css/theme.css" rel="stylesheet">
     <!--video css-->
     <link href="video/video-js.css" rel="stylesheet">
-    <!--Flash SWF-->
+    <!--Flash SWF>
     <script>
       videojs.options.flash.swf = "video/video-js.swf";
-    </script>
+    </script-->
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -47,13 +47,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Test</a>
+          <a class="navbar-brand" href="#">Test Template Project</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#about">Conditions and Limitations</a></li>
+            <li><a href="#contact">API Methods</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -86,7 +86,6 @@
                   <div class="form-group">
                     <p id="statusStr"></p>
                   </div>
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
               </form>
             </div>
           </div>
@@ -105,6 +104,7 @@
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="startSec"  max="59" min="0" value="0" >
                   </div>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
               </form>
             </div>
             <!--End time-->
@@ -117,6 +117,10 @@
                   <button type="button"  class="btn btn-danger" disabled="disabled">:</button>
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="endSec"  max="59" min="0" value="0">
+                  </div>
+                  <button type="button"  class="btn btn-warning" disabled="disabled">Devide No.</button>
+                  <div class="form-group">
+                    <input size="5" type="number" class="form-control" id="deviceId"  max="2" min="0" value="0">
                   </div>
                   <button type="button"  class="btn btn-primary pull-right" onclick="core.doPlay()">播放</button>
                   
@@ -140,12 +144,12 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <!--For jquery -->
-    <script src="js/jquery.min.js" charset="UTF-8"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-1.8.3.min.js"></script>
     <!--For bootstarp -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/holder.min.js"></script>
     <!--For bootstarp datetime picker -->
-    <script src="js/jquery-1.8.3.min.js"></script>
     <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <!--For video core js-->
@@ -172,13 +176,16 @@
     </script> 
     <!--For document ready-->
     <script type="text/javascript">
-        //Initially,it's empty
-        var playlist = null;
         $(document).ready(function(){
           //initial something...
           core.getPlayerId("vjsplayer");
           core.getStatusId("statusImg","statusStr");
+          core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
+          core.getDeviceId("deviceId");
       });
+    </script>
+    <script>
+      videojs.options.flash.swf = "video/video-js.swf"
     </script>
   </body>
 </html>

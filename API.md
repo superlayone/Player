@@ -57,8 +57,11 @@
         var playlist = null;
         $(document).ready(function(){
           //initial something...
+          //initial something...
           core.getPlayerId("vjsplayer");
-		  core.getStatusId("statusImg","statusStr");
+          core.getStatusId("statusImg","statusStr");
+          core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
+          core.getDeviceId("deviceId");
       });
     </script>
 > datetimepicker控件样式的定义
@@ -83,7 +86,7 @@
 	    </script> 
 
 # 测试页面框架 #
-Bootstrap是是一个简洁、直观、强悍、移动设备优先的前端开发框架，可以让web开发更迅速、简单。因此我们选择了基于Bootstrap 3.03开发测试页面
+Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发框架，可以让web开发更迅速、简单。因此我们选择了基于Bootstrap 3.03开发测试页面,更多关于Bootstrap的技术请移步Bootstrap中文站点 [http://v3.bootcss.com/](http://v3.bootcss.com/)
 
 > 你需要在HTML的head标签里面嵌入对bootstrap的样式文件的引用
 
@@ -98,7 +101,8 @@ Bootstrap是是一个简洁、直观、强悍、移动设备优先的前端开�
 >然后你需要在body的底部添加对js的引用
 	
 	<!--For jquery -->
-    <script src="js/jquery.min.js" charset="UTF-8"></script>
+    <script src="js/jquery.min.js"></script>
+	<script src="js/jquery-1.8.3.min.js"></script>
     <!--For bootstarp -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/holder.min.js"></script>
@@ -109,7 +113,6 @@ Bootstrap是是一个简洁、直观、强悍、移动设备优先的前端开�
 >添加完css引用后需要引用js
 
 	<!--For bootstarp datetime picker -->
-    <script src="js/jquery-1.8.3.min.js"></script>
     <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 >接下来你需要对日期时间控件进行一些定制，以满足要求
@@ -263,7 +266,7 @@ Bootstrap是是一个简洁、直观、强悍、移动设备优先的前端开�
 - 说明
 	
 	>获取用户的请求时间戳信息，并进行合法性检测 
-- 参数表——startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId
+- 参数表——startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId
 
 	> startYYYYMMDDHHIIId——起始的日历控件id
 	
@@ -272,6 +275,8 @@ Bootstrap是是一个简洁、直观、强悍、移动设备优先的前端开�
 	> endYYYYMMDDHHIIId——结束的日历控件id
 	
 	> endSecId——结束秒钟输入框id
+	
+	>deviceId——设备卡口号 
 - 调用方法
 
-        core.getDatetimepickerStr(startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId);
+        core.getDatetimepickerStr(startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId);
