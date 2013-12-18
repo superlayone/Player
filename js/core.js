@@ -1,4 +1,4 @@
-<!--core js-->
+/*core js*/
 /*
 <Author> = Layone
 2013.12
@@ -14,9 +14,25 @@ This software is written by Layone!
 (E) Layone hold the master version.
 
 */
+/*
+Disclaimer
+*/
+/*
+If you don't like displaying the status information,
+just remove the sentences as below:
+			//change status
+			this.statusImg.src = "img/xxx.gif(png/jpg)";
+			this.statusStr.innerHTML = "Status string";
+or these:
+			//change status
+			core.statusImg.src = "img/xxx.gif(png/jpg)";
+			core.statusStr.innerHTML = "Status string";		
+in the following javascript sentences.
+*/
 var core = {
 	playerId:""
-	,playlist:["http://219.245.64.30:80/videos/2013/12/17/192.168.0.1/20131217103000.mp4"]
+	//"http://219.245.64.30:80/videos/2013/12/17/192.168.0.1/20131217103000.mp4"
+	,playlist:["http://127.0.0.1/20131212121200.mp4","http://127.0.0.1/20131212131200.mp4"]
 	,playerInstance:""
 	,statusImg:""
 	,statusStr:""
@@ -25,9 +41,11 @@ var core = {
 	,endYYYYMMDDHHIIId:""
 	,endSecId:""
 	,deviceId:""
-	,requestedStartTimeStr:"20131217103000"
-	,requestedEndTimeStr:"20131217103020"
-	,requestedDeviceStr:"0"
+	,requestedStartTimeStr:"20131212121210"
+	,requestedEndTimeStr:"20131212131220"
+	,requestedDeviceStr:"192.168.0.1"
+	,serverPlaylistPostAddress:"http://219.245.64.30/play"
+	,serverDownloadPostAddress:"http://219.245.64.30/download"
 	//when track ended to fire up
 	,playEnded:function() {
 		//choose another track
@@ -141,14 +159,8 @@ var core = {
 		this.statusImg.src = "img/loading.gif";
 		this.statusStr.innerHTML = "Downloading...";
 		*/
-	}
-	,downloadCompleted:function () {
-		// body...
-		/*
-		//hide this feature temporarily
-		this.statusImg.src = "img/downloaded.png";
-		this.statusStr.innerHTML = "Download completed...";
-		*/
+　　	//window.location = "http://219.245.64.30:80/livedownload/2013121710325520131217103305merge.mp4";
+		//ajaxDownload();
 	}
 	//get selected date info
 	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId) {
@@ -246,32 +258,49 @@ var core = {
 			default:
 			  alert("请输入合法的设备编号，已选择使用默认值！");
 			  document.getElementById(deviceId).value= 0;
-			  return "192.168.1.10";
+			  return "192.168.0.1";
 		}
 	}
+	/*
+	calculating the difference,and return in seconds
+	we suppose the timeStamp2 is greater than timeStamp1
+	*/
 	,timeDiff:function (timeStamp1,timeStamp2) {
+		/*
+		split the time string to dividual ones to match the args conditions
+		*/
 		var startYYYY = timeStamp1.substring(0,4);
 		var startMM = timeStamp1.substring(4,6);
 		var startDD = timeStamp1.substring(6,8);
 		var startHH = timeStamp1.substring(8,10);
 		var startII = timeStamp1.substring(10,12);
 		var startSS = timeStamp1.substring(12,14);
-		
+		/*----------------------------------------*/
 		var endYYYY = timeStamp2.substring(0,4);
 		var endMM = timeStamp2.substring(4,6);
 		var endDD = timeStamp2.substring(6,8);
 		var endHH = timeStamp2.substring(8,10);
 		var endII = timeStamp2.substring(10,12);
 		var endSS = timeStamp2.substring(12,14);		
-		
+		/*----------------------------------------*/
 		var startDate = new Date(startYYYY,startMM,startDD,startHH,startII,startSS);
 		var endDate = new Date(endYYYY,endMM,endDD,endHH,endII,endSS);
+		/*
+		the latter one is greater than the previous one
+		so the return value is greater than zero
+		*/
 		var diff = endDate.getTime() - startDate.getTime();
 		return diff/1000;
 	}
 }
-//Global track controlling
-	//Stop in a certain time count
+/*
+Global track controlling
+*/
+/*
+this timedCount call itself once per second if matched the given conditions
+after dragging the slide bar,its location info was lost
+just test the currentTime and the  predetermine end point
+*/
 function timedCount(point) {
 	if(core.playerInstance.currentTime() >= point){
 		core.playerInstance.currentTime(0);
@@ -280,17 +309,26 @@ function timedCount(point) {
 		var t = setTimeout("timedCount("+point+")",1000);
 	}
 }
+/*
+when play the first track,we need a technical means to get a ready state,
+so in 500ms we jump to play() action,same as it starts at predetermine point
+*/
 function quickStartTrack (startAt) {
 	// body...
 	core.playerInstance.currentTime(startAt);
 	core.playerInstance.play();
 }
+/*
+Ajax post request in async mode,
+as the whole project is based on HTML5 technology,so we just build a XMLHttpRequest,not include a activeX request
+the return value is in JSON format
+*/
 function ajaxRequest () {
 	if(/*this.getDatetimepickerStr(this.startYYYYMMDDHHIIId,this.startSecId,this.endYYYYMMDDHHIIId,this.endSecId,this.deviceId)true*/true){
 		var httpReq;
 		if (window.XMLHttpRequest){
 			// code for IE7+, Firefox, Chrome, Opera, Safari
-				 httpReq=new XMLHttpRequest();
+				 httpReq = new XMLHttpRequest();
 		}else{
 			alert("Require a fine style broswer!")
 		}
@@ -303,15 +341,42 @@ function ajaxRequest () {
 			    core.doPlay();
 			   }
 		}
-		//alert(core.requestedStartTimeStr);
-		var postUrl = "http://219.245.64.30/play";
-		var postData = "start_time="+"20131217103000"+"&end_time="+"20131217103020"+"&port_id="+"192.168.0.1";
-		httpReq.open("POST",postUrl,true);
+		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
+		httpReq.open("POST",core.serverPlaylistPostAddress,true);
 		httpReq.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		httpReq.send(postData);
 		//change status
-		this.statusImg.src = "img/loading.gif";
-		this.statusStr.innerHTML = "Fetching data from the server...";		
+		core.statusImg.src = "img/loading.gif";
+		core.statusStr.innerHTML = "Fetching data from the server...";		
 	}
-
+}
+/*
+Ajax post request for getting a download url and down it,
+the return value will be just one url string
+*/
+function ajaxDownload () {
+	/*
+	user maybe change the time interval,
+	so re-get these values again
+	*/
+	if(/*this.getDatetimepickerStr(this.startYYYYMMDDHHIIId,this.startSecId,this.endYYYYMMDDHHIIId,this.endSecId,this.deviceId)true*/true){
+		var httpDownloadReq;
+		if(window.XMLHttpRequest){
+			httpDownloadReq = new XMLHttpRequest();
+		}else{
+			alert("Require a fine style broswer!");
+		}
+		httpDownloadReq.onreadystatechange = function(){
+			if(httpDownloadReq.readyState == 4 && httpDownloadReq.status == 200){
+				var downloadUrl = httpDownloadReq.responseText;
+				if(downloadUrl != ""){
+					window.location = downloadUrl;
+				}
+			}
+		}
+		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
+		httpDownloadReq.open("POST",core.serverDownloadPostAddress,true);
+		httpDownloadReq.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		httpDownloadReq.send(postData);
+	}
 }

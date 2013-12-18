@@ -136,7 +136,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
     });
     </script> 
 
-# API 方法#
+# Video方法#
 ## videojs() ##
 
 - 说明
@@ -222,6 +222,8 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 
 		player.requestFullScreen();
 
+# core(核心逻辑)方法 #
+
 ## playEnded() ##
 
 - 说明
@@ -265,7 +267,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 
 - 说明
 	
-	>获取用户的请求时间戳信息，并进行合法性检测 
+	>获取用户的请求时间戳信息，并进行合法性检测。该函数会调用一些子方法，不再细述。
 - 参数表——startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId
 
 	> startYYYYMMDDHHIIId——起始的日历控件id
@@ -280,3 +282,25 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 调用方法
 
         core.getDatetimepickerStr(startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId);
+
+## timeDiff() ##
+
+- 说明
+	
+	>计算两个格式化时间戳的差值
+- 参数表——timeStamp1,timeStamp2
+
+	> timeStamp1——开始时间
+	
+	> timeStamp2——结束时间
+
+- 返回值
+	
+	
+	> 该方法返回两者的差值，以秒为单位
+
+- 调用方法
+        var startAt = this.timeDiff(fileTimeStr,this.requestedStartTimeStr);
+
+## ##
+*其他方法大部分为函数间的内部调用，不再赘述，详细可查看core.js*
