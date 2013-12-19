@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Test template">
+    <meta name="author" content="Layone">
     <!--link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"-->
 
-    <title>VOD Test</title>
+    <title>Testing</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -47,13 +47,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Test Template Project</a>
+          <a class="navbar-brand" href="#">Project</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">Conditions and Limitations</a></li>
-            <li><a href="#contact">API Methods</a></li>
+            <li class="active"><a href="#">主页</a></li>
+            <li><a href="#conditions" class="smoothScroll">免责声明</a></li>
+            <li><a href="#API"  class="smoothScroll">API方法</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -61,7 +61,7 @@
 
     <div class="container theme-showcase">
         <div class="page-header">
-          <h2>Video on Demand</h2>
+          <h2>Testing</h2>
         </div>
         <div class="playerbody center-block">
             <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
@@ -76,7 +76,7 @@
             </video>
         </div>
         <div class="panel panel-info">
-          <div class="panel-heading">Status</div>
+          <div class="panel-heading">状态信息</div>
           <div class="panel-body">
             <div class="panel">
               <form class="form-inline" role="form">
@@ -91,7 +91,7 @@
           </div>
         </div>
         <div class="panel panel-primary">
-          <div class="panel-heading">Time Interval</div>
+          <div class="panel-heading">时间区间</div>
           <div class="panel-body">
             <!--Start time-->
             <div class="panel">
@@ -122,12 +122,12 @@
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="deviceId"  max="2" min="0" value="0">
                   </div>
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doPlay()">播放</button>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.invokePlayAction()">播放</button>
               </form>
             </div>
         </div>
         </div>
-        <div class="page-header">
+        <div class="page-header" id="conditions">
           <h2>Conditions and Limitations</h2>
         </div>
         <div class="alert alert-danger">
@@ -138,7 +138,26 @@
           <p>(E) Layone hold the master version.</p>
           
         </div>
+        <div class="page-header" id="API">
+          <h2>API Methods</h2>
+        </div>
+        <div class="alert alert-success">
+          <p>&middot;项目目录下的API Markdown文件给出了详细的API说明</p>
+          <p>&middot;API文档包含了video标签的播放器核心js调用方法和控制逻辑core.js的方法</p>
+          <p>&middot;API文档亦给出了嵌入HTML的方法</p>
+          <p>&middot;若继续使用Bootstarp前端框架，该文档也给出了简要的框架引入方法</p>
+          <p>&middot;Markdown的查看工具请移步 <a href="http://markdownpad.com/">http://markdownpad.com/</a></p>
+        </div>
+        <!-- Footer
+        ================================================== -->
+        <footer>
+          <p class="pull-right"><a href="#" class="smoothScroll">Back to top</a></p>
+          <p>&copy;All Rights Reserved!Layone 2013 . &middot; <a href="#conditions" > Privacy</a> &middot; <a href="#">Terms of Use</a></p>
+        </footer>
+        <!-- Footer end
+          ================================================== -->
     </div> <!-- /container -->
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -148,6 +167,8 @@
     <!--For bootstarp -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/holder.min.js"></script>
+    <!--For scroolling jump effect-->
+    <script src="js/smoothscroll.js"></script>
     <!--For bootstarp datetime picker -->
     <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>

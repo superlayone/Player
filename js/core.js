@@ -32,7 +32,7 @@ in the following javascript sentences.
 var core = {
 	playerId:""
 	//"http://219.245.64.30:80/videos/2013/12/17/192.168.0.1/20131217103000.mp4"
-	,playlist:["http://127.0.0.1/20131212121200.mp4","http://127.0.0.1/20131212131200.mp4"]
+	,playlist:""
 	,playerInstance:""
 	,statusImg:""
 	,statusStr:""
@@ -41,11 +41,13 @@ var core = {
 	,endYYYYMMDDHHIIId:""
 	,endSecId:""
 	,deviceId:""
-	,requestedStartTimeStr:"20131212121210"
-	,requestedEndTimeStr:"20131212131220"
+	,requestedStartTimeStr:"20131217103255"
+	,requestedEndTimeStr:"20131217103305"
 	,requestedDeviceStr:"192.168.0.1"
-	,serverPlaylistPostAddress:"http://219.245.64.30/play"
-	,serverDownloadPostAddress:"http://219.245.64.30/download"
+	,serverAddress:"http://219.245.64.30"
+	,downloadStatus:"None"
+	,downloadId:""
+	,test:0
 	//when track ended to fire up
 	,playEnded:function() {
 		//choose another track
@@ -56,7 +58,7 @@ var core = {
 			this.playerInstance.play();
 			//update status
 			this.statusImg.src = "img/play.gif";
-			this.statusStr.innerHTML = "Playing";
+			this.statusStr.innerHTML = "正在播放...";
 			this.playlist.shift();
 		}else if(this.playlist.length == 1){
 			//last one ,calculate the end timestamp and start a timedCount task
@@ -69,11 +71,11 @@ var core = {
 			//start a timedCount task
 			timedCount(endAt);
 			this.statusImg.src = "img/play.gif";
-			this.statusStr.innerHTML = "Playing";
+			this.statusStr.innerHTML = "正在播放...";
 			this.playlist.shift();
 		}else{
 			this.statusImg.src = "img/pause.png";
-			this.statusStr.innerHTML = "Ended";
+			this.statusStr.innerHTML = "已结束...";
 		}
 		//choose another track end
 	}
@@ -82,15 +84,15 @@ var core = {
 	}
 	,playPaused:function () {
 		this.statusImg.src = "img/pause.png";
-		this.statusStr.innerHTML = "Paused";
+		this.statusStr.innerHTML = "已暂停...";
 	}
 	,playWaiting:function () {
 		this.statusImg.src = "img/pause.png";
-		this.statusStr.innerHTML = "Waiting";
+		this.statusStr.innerHTML = "等待中...";
 	}
 	,playPlaying:function () {
 		this.statusImg.src = "img/play.gif";
-		this.statusStr.innerHTML = "Playing";
+		this.statusStr.innerHTML = "正在播放...";
 	}
 	//inititally get the playerId
 	,getPlayerId:function (replacePlayerId) {
@@ -154,13 +156,7 @@ var core = {
 		}
 	}
 	,doDownload:function () {
-		/*
-		//hide this feature temporarily
-		this.statusImg.src = "img/loading.gif";
-		this.statusStr.innerHTML = "Downloading...";
-		*/
-　　	//window.location = "http://219.245.64.30:80/livedownload/2013121710325520131217103305merge.mp4";
-		//ajaxDownload();
+		ajaxDownload();
 	}
 	//get selected date info
 	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId) {
@@ -200,6 +196,7 @@ var core = {
 	}
 	,getStartSec:function (replaceStartSecId) {
 		// body...
+
 		var receivedStartSec = $('#'+replaceStartSecId).val();
 		/*
 		Format return value to %2d
@@ -324,13 +321,13 @@ as the whole project is based on HTML5 technology,so we just build a XMLHttpRequ
 the return value is in JSON format
 */
 function ajaxRequest () {
-	if(/*this.getDatetimepickerStr(this.startYYYYMMDDHHIIId,this.startSecId,this.endYYYYMMDDHHIIId,this.endSecId,this.deviceId)true*/true){
+	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId,core.deviceId)){
 		var httpReq;
 		if (window.XMLHttpRequest){
 			// code for IE7+, Firefox, Chrome, Opera, Safari
 				 httpReq = new XMLHttpRequest();
 		}else{
-			alert("Require a fine style broswer!")
+			alert("(⊙o⊙)…你这个浏览器弱爆了，赶紧换一个支持HTML5的!")
 		}
 		httpReq.onreadystatechange=function(){
 			  if (httpReq.readyState==4 && httpReq.status==200){
@@ -342,12 +339,12 @@ function ajaxRequest () {
 			   }
 		}
 		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
-		httpReq.open("POST",core.serverPlaylistPostAddress,true);
+		httpReq.open("POST",core.serverAddress+"/play",true);
 		httpReq.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		httpReq.send(postData);
 		//change status
 		core.statusImg.src = "img/loading.gif";
-		core.statusStr.innerHTML = "Fetching data from the server...";		
+		core.statusStr.innerHTML = "正在获取播放列表...";		
 	}
 }
 /*
@@ -359,24 +356,68 @@ function ajaxDownload () {
 	user maybe change the time interval,
 	so re-get these values again
 	*/
-	if(/*this.getDatetimepickerStr(this.startYYYYMMDDHHIIId,this.startSecId,this.endYYYYMMDDHHIIId,this.endSecId,this.deviceId)true*/true){
+	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId,core.deviceId)){
 		var httpDownloadReq;
 		if(window.XMLHttpRequest){
 			httpDownloadReq = new XMLHttpRequest();
 		}else{
-			alert("Require a fine style broswer!");
+			alert("(⊙o⊙)…你这个浏览器弱爆了，赶紧换一个支持HTML5的!");
 		}
 		httpDownloadReq.onreadystatechange = function(){
 			if(httpDownloadReq.readyState == 4 && httpDownloadReq.status == 200){
-				var downloadUrl = httpDownloadReq.responseText;
-				if(downloadUrl != ""){
-					window.location = downloadUrl;
+				var returnId = httpDownloadReq.responseText;
+				if(returnId != ""){
+					core.downloadId = returnId;
+					//checkIfMerged(returnId);
+					alert(returnId);
+					check();
 				}
 			}
 		}
-		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
-		httpDownloadReq.open("POST",core.serverDownloadPostAddress,true);
-		httpDownloadReq.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		httpDownloadReq.send(postData);
+		var getData = "?start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
+		httpDownloadReq.open("GET",core.serverAddress+"/download"+getData,true);
+		httpDownloadReq.send();
+		//change status
+		core.statusImg.src = "img/loading.gif";
+		core.statusStr.innerHTML = "请稍等，服务器正在为您拼接视频...";	
 	}
+}
+/*
+if None,timed count every 3 seconds
+if not,do save as action
+*/
+function check () {
+	if(core.downloadStatus == "None"){
+		//core.statusStr.innerHTML = core.downloadId + core.test++;
+		checkIfMerged();
+		var t = setTimeout("check()",3000);
+	}else{
+		core.statusImg.src = "img/downloaded.png"
+		core.statusStr.innerHTML = "完成，请保存下载的视频文件!";
+		window.location = core.downloadStatus;
+	}
+}
+/*
+Ajax post request for getting a status and,
+if not None ,download it
+*/
+function checkIfMerged () {
+		var httpCheck;
+		if(window.XMLHttpRequest){
+			httpCheck = new XMLHttpRequest();
+		}else{
+			alert("(⊙o⊙)…你这个浏览器弱爆了，赶紧换一个支持HTML5的!");
+		}
+		httpCheck.onreadystatechange = function(){
+			if(httpCheck.readyState == 4 && httpCheck.status == 200){
+				var returnValue = httpCheck.responseText;
+				if(returnValue != ""){
+					core.downloadStatus = returnValue;
+				}
+			}
+		}
+		var postData = "task_id="+core.downloadId;
+		httpCheck.open("POST",core.serverAddress+"/download",true);
+		httpCheck.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		httpCheck.send(postData);
 }
