@@ -142,7 +142,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>HTML5 video的javascript包装 
-- 参数表——(id)
+- 参数表—id
 
 	> id-播放器video标签的标示符
 
@@ -155,7 +155,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>对媒体进行播放
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -166,7 +166,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>对媒体进行暂停操作 
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -176,21 +176,26 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 
 - 说明
 	
-	>设置新的播放点 
-- 参数表——(timeInt)
+	>设置新的播放点
+	
+	>获取当前的播放时间点 
+- 参数表—timeInt or null
 
 	> timeInt-设置当前的播放时间（秒）
-
+	
+	>无参数获取当前时间点	 
+	
 - 调用方法
 
     	player.currentTime(120);
+		var currentTimepoint = player.currentTime();
 
 ## src(url) ##
 
 - 说明
 	
 	>更新url,更新完需要调用play()方法执行 
-- 参数表——(url)
+- 参数表—url
 
 	> url-设置新的播放url
 
@@ -204,7 +209,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>获取当前媒体的时长 
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -216,7 +221,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 	
 	>请求全屏动作
 
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -231,7 +236,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 	>HTML5 video的监听事件，实现媒体结束事件的处理
 	
 	>类似的方法playPaused(),playWaiting(),playPlaying()不再列举
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -244,7 +249,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>初始化 
-- 参数表——playerId
+- 参数表—playerId
 
 	> playerId-初始化工作，保存当前的播放器标示符
 - 调用方法
@@ -252,12 +257,18 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 		//initial something...
         core.getPlayerId("vjsplayer");
 
+- 类似的方法还有getStatusId() , getDateTimepickerId() , getDeviceId().调用方法如下
+		
+		core.getStatusId("statusImg","statusStr");
+        core.getDateTimepickerId"startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
+        core.getDeviceId("deviceId");
+
 ## doPlay() ##
 
 - 说明
 	
 	>执行play动作 
-- 参数表——null
+- 参数表—null
 
 - 调用方法
 
@@ -268,7 +279,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>获取用户的请求时间戳信息，并进行合法性检测。该函数会调用一些子方法，不再细述。
-- 参数表——startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId
+- 参数表—startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId
 
 	> startYYYYMMDDHHIIId——起始的日历控件id
 	
@@ -288,7 +299,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 说明
 	
 	>计算两个格式化时间戳的差值
-- 参数表——timeStamp1,timeStamp2
+- 参数表—timeStamp1,timeStamp2
 
 	> timeStamp1——开始时间
 	
@@ -302,5 +313,50 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 调用方法
         var startAt = this.timeDiff(fileTimeStr,this.requestedStartTimeStr);
 
+## getResponseFilenameFromUrl() ##
+
+- 说明
+	
+	>正则表达式，从返回的URL里面提取文件名
+- 参数表—url
+
+	> url——服务器返回的url字符串
+
+- 返回值
+	
+	> 该方法返回文件名
+
+- 调用方法
+        var filename = getResponseFilenameFromUrl(url);
+
+## invokePlayAction() ##
+
+- 说明
+	
+	>播放按钮的实际相应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，即ajaxRequest()函数，
+- ajaxRequest()参数表—null
+
+- 返回值
+	
+	> 该方法无返回值，但是该方法会从服务器POST得到一个JSON格式的url列表，该返回值会保存在playlist结构中，然后调用实际的播放函数doPlay();
+
+- 调用方法
+        
+		ajaxRequest();
+
+## doDownload() ##
+
+- 说明
+	
+	>下载按钮的实际相应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，ajaxDownload()函数，
+- ajaxDownload()参数表—null
+
+- 返回值
+	
+	> 该方法无返回值，但是该方法会从服务器GET得到一个id值，然后启动定时任务，该任务的作用是POST请求查看返回值，若None，则继续等待服务器裁剪视频，若否，则执行实际的下载，其中checkIfMerged()函数用于POST检查视频是否已经在服务器完成裁剪，并修改相应的flag。
+
+- 调用方法
+        
+		ajaxDownload();
 ## ##
 *其他方法大部分为函数间的内部调用，不再赘述，详细可查看core.js*
