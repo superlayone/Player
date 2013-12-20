@@ -121,6 +121,16 @@ var core = {
 		var matched=url.match(/\/([\w]*)\.mp4/i);
  		return matched[1];
 	}
+	//Use RegEx to check if a url
+	,checkIfUrl:function (url) {
+		var strRegex = "^((https|http)?://)" ;
+		var re=new RegExp(strRegex); 
+		if(re.test(url)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	,invokePlayAction:function () {
 		ajaxRequest();
 	}
@@ -368,8 +378,6 @@ function ajaxDownload () {
 				var returnId = httpDownloadReq.responseText;
 				if(returnId != ""){
 					core.downloadId = returnId;
-					//checkIfMerged(returnId);
-					alert(returnId);
 					check();
 				}
 			}
@@ -379,7 +387,7 @@ function ajaxDownload () {
 		httpDownloadReq.send();
 		//change status
 		core.statusImg.src = "img/loading.gif";
-		core.statusStr.innerHTML = "请稍等，服务器正在为您拼接视频...";	
+		core.statusStr.innerHTML = "请稍等，正在发送拼接视频请求...";	
 	}
 }
 /*
@@ -388,13 +396,16 @@ if not,do save as action
 */
 function check () {
 	if(core.downloadStatus == "None"){
-		//core.statusStr.innerHTML = core.downloadId + core.test++;
+		//change status
+		core.statusStr.innerHTML = "请稍等，服务器正在为您拼接视频...";	
 		checkIfMerged();
 		var t = setTimeout("check()",3000);
 	}else{
-		core.statusImg.src = "img/downloaded.png"
-		core.statusStr.innerHTML = "完成，请保存下载的视频文件!";
-		window.location = core.downloadStatus;
+		if(core.checkIfUrl(core.downloadStatus)){
+			core.statusImg.src = "img/downloaded.png"
+			core.statusStr.innerHTML = "完成拼接，请保存下载的视频文件!";
+			window.location = core.downloadStatus;
+		}
 	}
 }
 /*
