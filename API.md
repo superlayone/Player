@@ -63,6 +63,7 @@
           core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
           core.getDeviceId("deviceId");
 		  core.getPlaylistviewId("playlistview");
+		  core.getPaginatorId("pageV");
       });
     </script>
 > datetimepicker控件样式的定义
@@ -136,6 +137,35 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
         inputMask: true
     });
     </script> 
+> 添加翻页控件bootstrap-paginator的引用
+	
+	<!--For pagination-->
+    <script src="js/bootstrap-paginator.js"></script>
+>定制bootstrap-paginator的样式
+	
+	<script type="text/javascript">
+          var options = {
+            bootstrapMajorVersion:3,
+            currentPage: 1,
+            totalPages:1,
+            alignment:'center',
+            useBootstrapTooltip:true,
+            onPageClicked: function(e,originalEvent,type,page){
+                core.getPage(page);
+            },
+            shouldShowPage:function(type, page, current){
+              switch(type){
+                  case "first":
+                  case "last":
+                      return false;
+                  default:
+                      return true;
+              }
+            }
+          }
+          $('#pageV').bootstrapPaginator(options);
+          $('#pageV').hide();
+    </script>
 
 # Video方法#
 ## videojs() ##
@@ -264,6 +294,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
         core.getDateTimepickerId"startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
         core.getDeviceId("deviceId");
 		core.getPlaylistviewId("playlistview");
+		core.getPaginatorId("pageV");
 
 ## playFromList() ##
 

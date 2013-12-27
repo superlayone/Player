@@ -93,6 +93,9 @@
         <div class="panel panel-info">
           <table id="playlistview" class="table table-striped table-hover">
           </table>
+          <div class="page">
+              <ul id='pageV'></ul>
+          </div>
         </div>
         <div class="panel panel-primary">
           <div class="panel-heading">时间区间</div>
@@ -175,6 +178,8 @@
     <script src="js/holder.min.js"></script>
     <!--For scroolling jump effect-->
     <script src="js/smoothscroll.js"></script>
+    <!--For pagination-->
+    <script src="js/bootstrap-paginator.js"></script>
     <!--For bootstarp datetime picker -->
     <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
@@ -209,10 +214,35 @@
           core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
           core.getDeviceId("deviceId");
           core.getPlaylistviewId("playlistview");
+          core.getPaginatorId("pageV");
       });
     </script>
     <script>
       videojs.options.flash.swf = "video/video-js.swf"
+    </script>
+    <script type="text/javascript">
+          var options = {
+            bootstrapMajorVersion:3,
+            currentPage: 1,
+            totalPages:1,
+            alignment:'center',
+            useBootstrapTooltip:true,
+            onPageClicked: function(e,originalEvent,type,page){
+                core.getPage(page);
+            },
+            shouldShowPage:function(type, page, current){
+              switch(type){
+                  case "first":
+                  case "last":
+                      return false;
+                  default:
+                      return true;
+              }
+            }
+          }
+          $('#pageV').bootstrapPaginator(options);
+          $('#pageV').hide();
+
     </script>
   </body>
 </html>

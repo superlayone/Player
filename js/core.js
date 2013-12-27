@@ -36,6 +36,9 @@ var core = {
 	,playListview:""
 	,currentIndex:0
 	,currentPlaying:""
+	,paginatorId:""
+	,totalPages:1
+	,currentPage:1
 	,playerInstance:""
 	,statusImg:""
 	,statusStr:""
@@ -138,6 +141,9 @@ var core = {
 	,getPlaylistviewId:function (playlistviewId) {
 		this.playlistviewId = playlistviewId;
 	}
+	,getPaginatorId:function (paginatorId) {
+		this.paginatorId = paginatorId;
+	}
 	//Use RegEx to split filename
 	,getResponseFilenameFromUrl:function (url) {
 		var matched=url.match(/\/([\w]*)\.mp4/i);
@@ -159,6 +165,19 @@ var core = {
 	,queryList:function() {
 		//console.info(id);
 		ajaxRequest();
+	}
+	,getPage:function (page) {
+		var listviewStr="";
+		if(parseInt(page) < this.totalPages){
+			for( i = 0 ; i < 10 ; i++){
+				listviewStr += this.generateRowCell(this.playlist[(page-1)*10+i],(page-1)*10+i);
+			}
+		}else{
+			for(i = 0 ; i < this.playlist.length-(page-1)*10 ; i++){
+				listviewStr += this.generateRowCell(this.playlist[(page-1)*10+i],(page-1)*10+i);
+			}
+		}
+		document.getElementById(core.playlistviewId).innerHTML = listviewStr;
 	}
 	,generateRowCell:function (url,id) {
 		var filename = this.getResponseFilenameFromUrl(url);
@@ -394,16 +413,34 @@ function ajaxRequest () {
 		}
 		httpReq.onreadystatechange=function(){
 			  if (httpReq.readyState==4 && httpReq.status==200){
-			    //
-			    core.playlist = eval ("(" + httpReq.responseText + ")");
-			    core.statusImg.src = "img/placeholder.png";
-			    core.statusStr.innerHTML = "";
-			    //core.doPlay();
-			    var playlistStr = "";
-			    for(i=0;i<core.playlist.length;i++){
-			    	playlistStr += core.generateRowCell(core.playlist[i],i);
-			    }
-			    document.getElementById(core.playlistviewId).innerHTML = playlistStr;
+				    //
+				    core.playlist = eval ("(" + httpReq.responseText + ")");
+				    core.statusImg.src = "img/placeholder.png";
+				    core.statusStr.innerHTML = "";
+
+					if(core.playlist.length %10 == 0 ){
+						core.totalPages = parseInt(core.playlist.length / 10);
+					}else{
+						core.totalPages = parseInt(core.playlist.length /10 +1);
+					}
+					var options = {
+						currentPage: 1,
+					    totalPages:core.totalPages,
+					}
+					$('#'+core.paginatorId).bootstrapPaginator(options);
+					$('#'+core.paginatorId).show();
+					var listviewStr="";
+					//first page list
+					if(core.totalPages > 1){
+						for(i=0;i<10;i++){
+							listviewStr += core.generateRowCell(core.playlist[i],i);
+						}
+					}else{
+						for(i=0;i<core.playlist.length;i++){
+							listviewStr += core.generateRowCell(core.playlist[i],i);
+						}
+					}
+					document.getElementById(core.playlistviewId).innerHTML = listviewStr;
 			   }
 		}
 		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
