@@ -1,6 +1,6 @@
 # Project #
 
-**H.264视频流的web播放器**
+**视频点播及下载系统**
 
 # 特点 #
 
@@ -62,6 +62,7 @@
           core.getStatusId("statusImg","statusStr");
           core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
           core.getDeviceId("deviceId");
+		  core.getPlaylistviewId("playlistview");
       });
     </script>
 > datetimepicker控件样式的定义
@@ -262,17 +263,20 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 		core.getStatusId("statusImg","statusStr");
         core.getDateTimepickerId"startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
         core.getDeviceId("deviceId");
+		core.getPlaylistviewId("playlistview");
 
-## doPlay() ##
+## playFromList() ##
 
 - 说明
 	
 	>执行play动作 
-- 参数表—null
+- 参数表—id
+	
+	> 播放列表的id值
 
 - 调用方法
 
-        core.doPlay();
+        core.playFromList(id);
 
 ## getDatetimepickerStr() ##
 
@@ -294,6 +298,32 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 
         core.getDatetimepickerStr(startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId);
 
+## generateRowCell()##
+
+- 说明
+	
+	>动态生成列表
+- 参数表—url,id
+	
+	> 视频的url值
+
+	> 播放列表的id值
+
+- 调用方法
+
+        var playlistStr = core.generateRowCell(url,index);
+## formatStr() ##
+
+- 说明
+	
+	>格式化日期字符串
+- 参数表—YYYYMMDDHHIISS格式的字符串
+	
+	> 正则后的文件名
+
+- 调用方法
+
+        var listStr = this.formatStr(filename);
 ## timeDiff() ##
 
 - 说明
@@ -329,16 +359,16 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 - 调用方法
         var filename = getResponseFilenameFromUrl(url);
 
-## invokePlayAction() ##
+## queryList() ##
 
 - 说明
 	
-	>播放按钮的实际相应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，即ajaxRequest()函数，
+	>查询按钮的实际响应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，即ajaxRequest()函数，
 - ajaxRequest()参数表—null
 
 - 返回值
 	
-	> 该方法无返回值，但是该方法会从服务器POST得到一个JSON格式的url列表，该返回值会保存在playlist结构中，然后调用实际的播放函数doPlay();
+	> 该方法无返回值，但是该方法会从服务器POST得到一个JSON格式的url列表，该返回值会保存在playlist结构中，然后生成列表供用户点选;
 
 - 调用方法
         
@@ -348,7 +378,7 @@ Bootstrap是一个简洁、直观、强悍、移动设备优先的前端开发�
 
 - 说明
 	
-	>下载按钮的实际相应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，ajaxDownload()函数，
+	>下载按钮的实际响应函数，该函数是一个入口函数，不带任何参数，但是该函数会转而调用一个global的函数，ajaxDownload()函数，
 - ajaxDownload()参数表—null
 
 - 返回值

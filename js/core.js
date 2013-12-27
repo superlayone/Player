@@ -33,6 +33,9 @@ var core = {
 	playerId:""
 	//"http://219.245.64.30:80/videos/2013/12/17/192.168.0.1/20131217103000.mp4"
 	,playlist:""
+	,playListview:""
+	,currentIndex:0
+	,currentPlaying:""
 	,playerInstance:""
 	,statusImg:""
 	,statusStr:""
@@ -44,12 +47,13 @@ var core = {
 	,requestedStartTimeStr:"20131217103255"
 	,requestedEndTimeStr:"20131217103305"
 	,requestedDeviceStr:"192.168.0.1"
-	,serverAddress:"http://219.245.64.30"
+	,serverAddress:"http://219.245.64.129"
 	,downloadStatus:"None"
 	,downloadId:""
 	,test:0
 	//when track ended to fire up
 	,playEnded:function() {
+		/*
 		//choose another track
 		//Not the last one
 		if(this.playlist.length>1){
@@ -78,6 +82,21 @@ var core = {
 			this.statusStr.innerHTML = "已结束...";
 		}
 		//choose another track end
+		*/
+		/*
+		If true ,automatically switch to next track
+		*/
+		if(this.currentIndex < this.playlist.length){
+			this.currentIndex++;
+			this.playerInstance.src(this.playlist[this.currentIndex]);
+			this.playerInstance.play();
+		}else{
+			/*
+			else,stop it!
+			*/
+			this.playerInstance.currentTime(0);
+			this.playerInstance.pause();
+		}
 	}
 	,quickSwitch:function (startAt) {
 		var t = setTimeout("quickStartTrack("+startAt+")",500);
@@ -92,7 +111,7 @@ var core = {
 	}
 	,playPlaying:function () {
 		this.statusImg.src = "img/play.gif";
-		this.statusStr.innerHTML = "正在播放...";
+		this.statusStr.innerHTML = "正在播放开始于 "+this.formatStr(this.getResponseFilenameFromUrl(this.playlist[this.currentIndex]))+ " 的视频文件...";
 	}
 	//inititally get the playerId
 	,getPlayerId:function (replacePlayerId) {
@@ -116,6 +135,9 @@ var core = {
 	,getDeviceId:function (deviceId) {
 		this.deviceId = deviceId;
 	}
+	,getPlaylistviewId:function (playlistviewId) {
+		this.playlistviewId = playlistviewId;
+	}
 	//Use RegEx to split filename
 	,getResponseFilenameFromUrl:function (url) {
 		var matched=url.match(/\/([\w]*)\.mp4/i);
@@ -133,6 +155,31 @@ var core = {
 	}
 	,invokePlayAction:function () {
 		ajaxRequest();
+	}
+	,queryList:function() {
+		//console.info(id);
+		ajaxRequest();
+	}
+	,generateRowCell:function (url,id) {
+		var filename = this.getResponseFilenameFromUrl(url);
+		var listStr = this.formatStr(filename);
+		var rowStr = '<tr id="'+id+'"><td>'+listStr+'</td> \
+				<td width="70" align="right"> \
+				<button type="button" class="btn btn-success btn-xs">下载</button> \
+				</td> \
+				<td width="50" align="right"> \
+				<button type="button" class="btn btn-primary btn-xs" onclick="core.playFromList(this.parentElement.parentElement.id)">播放</button> \
+				</td></tr>';
+		return rowStr;
+	}
+	,formatStr:function (filename) {
+		var YYYY = filename.substring(0,4)+"-";
+		var MM = filename.substring(4,6)+"-";
+		var DD = filename.substring(6,8)+" ";
+		var HH = filename.substring(8,10)+":";
+		var II = filename.substring(10,12)+":";
+		var SS = filename.substring(12,14);
+		return YYYY+MM+DD+HH+II+SS;
 	}
 	//as it shows,it just play
 	,doPlay:function (){
@@ -164,6 +211,12 @@ var core = {
 			timedCount(endAt);
 			this.playlist.shift();
 		}
+	}
+	,playFromList:function (id) {
+		this.playerInstance.src(this.playlist[id]);
+		//console.info(this.playlist[id]);
+		this.playerInstance.play();
+		this.currentIndex = id; 
 	}
 	,doDownload:function () {
 		ajaxDownload();
@@ -343,9 +396,14 @@ function ajaxRequest () {
 			  if (httpReq.readyState==4 && httpReq.status==200){
 			    //
 			    core.playlist = eval ("(" + httpReq.responseText + ")");
-			    core.statusImg.src = "img/placeholder.png"
+			    core.statusImg.src = "img/placeholder.png";
 			    core.statusStr.innerHTML = "";
-			    core.doPlay();
+			    //core.doPlay();
+			    var playlistStr = "";
+			    for(i=0;i<core.playlist.length;i++){
+			    	playlistStr += core.generateRowCell(core.playlist[i],i);
+			    }
+			    document.getElementById(core.playlistviewId).innerHTML = playlistStr;
 			   }
 		}
 		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
@@ -402,9 +460,12 @@ function check () {
 		var t = setTimeout("check()",3000);
 	}else{
 		if(core.checkIfUrl(core.downloadStatus)){
-			core.statusImg.src = "img/downloaded.png"
+			core.statusImg.src = "img/downloaded.png";
 			core.statusStr.innerHTML = "完成拼接，请保存下载的视频文件!";
 			window.location = core.downloadStatus;
+		}else{
+			core.statusImg.src = "img/error.png";
+			core.statusStr.innerHTML = "(⊙o⊙)…额，拼接失败!";
 		}
 	}
 }

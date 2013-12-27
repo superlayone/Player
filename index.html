@@ -9,7 +9,7 @@
     <meta name="author" content="Layone">
     <!--link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"-->
 
-    <title>Testing</title>
+    <title>视频点播系统</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -21,6 +21,7 @@
     <link href="css/theme.css" rel="stylesheet">
     <!--video css-->
     <link href="video/video-js.css" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" />
     <!--Flash SWF>
     <script>
       videojs.options.flash.swf = "video/video-js.swf";
@@ -47,13 +48,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project</a>
+          <a class="navbar-brand" href="#">视频点播系统</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="#">主页</a></li>
             <li><a href="#conditions" class="smoothScroll">Conditions and Limitations</a></li>
-            <li><a href="#API"  class="smoothScroll">API Methods</a></li>
+            <li><a href="#API"  class="smoothScroll">API方法</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -61,7 +62,6 @@
 
     <div class="container theme-showcase">
         <div class="page-header">
-          <h2>Testing</h2>
         </div>
         <div class="playerbody center-block">
             <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
@@ -90,6 +90,10 @@
             </div>
           </div>
         </div>
+        <div class="panel panel-info">
+          <table id="playlistview" class="table table-striped table-hover">
+          </table>
+        </div>
         <div class="panel panel-primary">
           <div class="panel-heading">时间区间</div>
           <div class="panel-body">
@@ -104,7 +108,7 @@
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="startSec"  max="59" min="0" value="0" >
                   </div>
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.queryList()">查询</button>
               </form>
             </div>
             <!--End time-->
@@ -118,11 +122,11 @@
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="endSec"  max="59" min="0" value="0">
                   </div>
-                  <button type="button"  class="btn btn-warning" disabled="disabled">Devide No.</button>
+                  <button type="button"  class="btn btn-warning" disabled="disabled">设备编号</button>
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="deviceId"  max="2" min="0" value="0">
                   </div>
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.invokePlayAction()">播放</button>
+                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
               </form>
             </div>
         </div>
@@ -139,7 +143,7 @@
           
         </div>
         <div class="page-header" id="API">
-          <h2>API Methods</h2>
+          <h2>API方法</h2>
         </div>
         <div class="alert alert-success">
           <p>&middot;项目目录下的API Markdown文件给出了详细的API说明，我们亦给出了API方法的PDF版本<a href="API.pdf" target="_blank">API.pdf</a></p>
@@ -204,6 +208,7 @@
           core.getStatusId("statusImg","statusStr");
           core.getDateTimepickerId("startYYYYMMDDHHII","startSec","endYYYYMMDDHHII","endSec");
           core.getDeviceId("deviceId");
+          core.getPlaylistviewId("playlistview");
       });
     </script>
     <script>
