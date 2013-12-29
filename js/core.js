@@ -28,11 +28,12 @@ or these:
 			core.statusImg.src = "img/xxx.gif(png/jpg)";
 			core.statusStr.innerHTML = "Status string";		
 in the following javascript sentences.
+And do not pass parameters to getStatusId("statusImg","statusStr") in HTML.
 */
 var core = {
 	playerId:""
-	//"http://219.245.64.30:80/videos/2013/12/17/192.168.0.1/20131217103000.mp4"
-	,playlist:""
+	,playlist:[]
+	,downloadlist:[]
 	,playListview:""
 	,currentIndex:0
 	,currentPlaying:""
@@ -89,7 +90,7 @@ var core = {
 		/*
 		If true ,automatically switch to next track
 		*/
-		if(this.currentIndex < this.playlist.length){
+		if(this.currentIndex < this.playlist.length-1){
 			this.currentIndex++;
 			this.playerInstance.src(this.playlist[this.currentIndex]);
 			this.playerInstance.play();
@@ -184,7 +185,7 @@ var core = {
 		var listStr = this.formatStr(filename);
 		var rowStr = '<tr id="'+id+'"><td>'+listStr+'</td> \
 				<td width="70" align="right"> \
-				<button type="button" class="btn btn-success btn-xs">下载</button> \
+				<button type="button" class="btn btn-success btn-xs" onclick="core.downloadFromList(this.parentElement.parentElement.id)">下载</button> \
 				</td> \
 				<td width="50" align="right"> \
 				<button type="button" class="btn btn-primary btn-xs" onclick="core.playFromList(this.parentElement.parentElement.id)">播放</button> \
@@ -236,6 +237,9 @@ var core = {
 		//console.info(this.playlist[id]);
 		this.playerInstance.play();
 		this.currentIndex = id; 
+	}
+	,downloadFromList:function (id) {
+		console.info(id);
 	}
 	,doDownload:function () {
 		ajaxDownload();
@@ -413,16 +417,33 @@ function ajaxRequest () {
 		}
 		httpReq.onreadystatechange=function(){
 			  if (httpReq.readyState==4 && httpReq.status==200){
-				    //
-				    core.playlist = eval ("(" + httpReq.responseText + ")");
+					//Split the response array into two lists
+					/*
+					//---------Test data------------------------------------------------- 
+					var responseList = ["down1","play1","down2","play2","down3","play3",
+										"down4","play4","down5","play5","down6","play6"];
+					*/
+					var responseList = eval ("(" + httpReq.responseText + ")");
+					for(i = 0 ; i < responseList.length/2 ; i++ ){
+						core.playlist[i]=responseList[2*i];
+						core.downloadlist[i]=responseList[2*i+1];
+					}
+					/*
+					//---------Debug info-------------
+					console.info(core.downloadlist);
+					console.info(core.playlist);
+					*/
 				    core.statusImg.src = "img/placeholder.png";
 				    core.statusStr.innerHTML = "";
-
+				    /*
+				    Calculating page info
+				    */
 					if(core.playlist.length %10 == 0 ){
 						core.totalPages = parseInt(core.playlist.length / 10);
 					}else{
 						core.totalPages = parseInt(core.playlist.length /10 +1);
 					}
+					//Setting paginator
 					var options = {
 						currentPage: 1,
 					    totalPages:core.totalPages,
