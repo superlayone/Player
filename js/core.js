@@ -239,7 +239,7 @@ var core = {
 		this.currentIndex = id; 
 	}
 	,downloadFromList:function (id) {
-		console.info(id);
+		window.location = core.downloadlist[id];
 	}
 	,doDownload:function () {
 		ajaxDownload();
@@ -333,10 +333,10 @@ var core = {
 			  return "192.168.0.1" ;
 			  break;
 			case '1':
-			  return "192.168.0.1" ;
+			  return "192.168.0.2" ;
 			  break;
 			case '2':
-			  return "192.168.0.1" ;
+			  return "192.168.0.3" ;
 			  break;
 			default:
 			  alert("请输入合法的设备编号，已选择使用默认值！");
@@ -418,15 +418,17 @@ function ajaxRequest () {
 		httpReq.onreadystatechange=function(){
 			  if (httpReq.readyState==4 && httpReq.status==200){
 					//Split the response array into two lists
-					/*
 					//---------Test data------------------------------------------------- 
-					var responseList = ["down1","play1","down2","play2","down3","play3",
-										"down4","play4","down5","play5","down6","play6"];
+					/*
+					var responseList = ["play1","play2","play3","play4","play5","play6",
+										"down1","down2","down3","down4","down5","down6"];
 					*/
 					var responseList = eval ("(" + httpReq.responseText + ")");
 					for(i = 0 ; i < responseList.length/2 ; i++ ){
-						core.playlist[i]=responseList[2*i];
-						core.downloadlist[i]=responseList[2*i+1];
+						core.playlist[i]=responseList[i];
+					}
+					for(i = responseList.length/2 , j=0 ; i < responseList.length ; i++ ,j++){
+						core.downloadlist[j]=responseList[i];
 					}
 					/*
 					//---------Debug info-------------
@@ -475,7 +477,7 @@ function ajaxRequest () {
 }
 /*
 Ajax post request for getting a download url and down it,
-the return value will be just one url string
+the return value will be just one unique id
 */
 function ajaxDownload () {
 	/*
