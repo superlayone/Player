@@ -103,32 +103,30 @@
             <!--Start time-->
             <div class="panel">
               <form class="form-inline" role="form">
-                  <button type="button" class="btn btn-success" disabled="disabled">开始时间</button>
                   <div class="form-group">
-                    <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="startYYYYMMDDHHII">
+                    <input size="40" type="text" readonly class="form_datetime form-control col-md-5" id="startYYYYMMDDHHII" placeholder="点击选择起始时间(精确到分钟)">
                   </div>
-                  <button type="button" class="btn btn-success" disabled="disabled">:</button>
                   <div class="form-group">
-                    <input size="5" type="number" class="form-control" id="startSec"  max="59" min="0" value="0" >
+                    <input type="number" size="5" class="form-control" id="startSec"  max="59" min="0" value="0" >
                   </div>
+                  <button type="button" class="btn btn-success" disabled="disabled">秒</button>
                   <button type="button"  class="btn btn-primary pull-right" onclick="core.queryList()">查询</button>
               </form>
             </div>
             <!--End time-->
             <div class="panel">
               <form class="form-inline" role="form">
-                  <button type="button"  class="btn btn-danger" disabled="disabled">结束时间</button>
                   <div class="form-group">
-                    <input size="40" type="text" value="" readonly class="form_datetime form-control col-md-5" id="endYYYYMMDDHHII">
+                    <input size="40" type="text" readonly class="form_datetime form-control col-md-5" id="endYYYYMMDDHHII" placeholder="点击选择结束时间(精确到分钟)">
                   </div>
-                  <button type="button"  class="btn btn-danger" disabled="disabled">:</button>
                   <div class="form-group">
-                    <input size="5" type="number" class="form-control" id="endSec"  max="59" min="0" value="0">
+                    <input type="number" size="5" class="form-control" id="endSec"  max="59" min="0" value="0">
                   </div>
-                  <button type="button"  class="btn btn-warning" disabled="disabled">设备编号</button>
+                  <button type="button"  class="btn btn-success" disabled="disabled">秒</button>
+                  <button type="button"  class="btn btn-default" disabled="disabled">设备编号</button>
                   <div class="form-group">
                     <input size="5" type="number" class="form-control" id="deviceId"  max="2" min="0" value="0">
-                  </div>
+                  </div> 
                   <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
               </form>
             </div>

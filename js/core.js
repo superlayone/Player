@@ -51,6 +51,7 @@ var core = {
 	,requestedStartTimeStr:"20131217103255"
 	,requestedEndTimeStr:"20131217103305"
 	,requestedDeviceStr:"192.168.0.1"
+	//When deployed in server,set to empty
 	,serverAddress:"http://219.245.64.129"
 	,downloadStatus:"None"
 	,downloadId:""
@@ -282,8 +283,8 @@ var core = {
 	}
 	,getStartSec:function (replaceStartSecId) {
 		// body...
-
-		var receivedStartSec = $('#'+replaceStartSecId).val();
+		// prevent prefix-0
+		var receivedStartSec = parseInt($('#'+replaceStartSecId).val());
 		/*
 		Format return value to %2d
 		*/
@@ -295,7 +296,7 @@ var core = {
 			}
 		}else{
 			document.getElementById(replaceStartSecId).value= 0;
-			alert("请输入合法的秒钟值，该值已恢复至默认！");
+			alert("请输入合法的秒钟值，该值已恢复至默认0！");
 			//return default value
 			return '00';
 		}
@@ -313,7 +314,7 @@ var core = {
 	}
 	,getEndSec:function (replaceEndSecId) {
 		// body...
-		var receivedEndSec = $('#'+replaceEndSecId).val();
+		var receivedEndSec = parseInt($('#'+replaceEndSecId).val());
 		if(receivedEndSec >=0 && receivedEndSec <=59){
 			if(receivedEndSec <10){
 				return '0'+receivedEndSec;
@@ -322,7 +323,7 @@ var core = {
 			}
 		}else{
 			document.getElementById(replaceEndSecId).value= 0;
-			alert("请输入合法的秒钟值，该值已恢复至默认！");
+			alert("请输入合法的秒钟值，该值已恢复至默认0！");
 			return '00';
 		}
 	}
@@ -339,7 +340,7 @@ var core = {
 			  return "192.168.0.3" ;
 			  break;
 			default:
-			  alert("请输入合法的设备编号，已选择使用默认值！");
+			  alert("请输入合法的设备编号，已选择使用默认值0！");
 			  document.getElementById(deviceId).value= 0;
 			  return "192.168.0.1";
 		}
