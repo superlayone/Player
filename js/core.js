@@ -48,13 +48,16 @@ var core = {
 	,endYYYYMMDDHHIIId:""
 	,endSecId:""
 	,deviceId:""
+	,jumpMinId:""
+	,jumpSecId:""
 	,requestedStartTimeStr:"20131217103255"
 	,requestedEndTimeStr:"20131217103305"
 	,requestedDeviceStr:"192.168.0.1"
 	//When deployed in server,set to empty
-	,serverAddress:"http://219.245.64.129"
+	,serverAddress:""
 	,downloadStatus:"None"
 	,downloadId:""
+	,playerStatus:""
 	,test:0
 	//when track ended to fire up
 	,playEnded:function() {
@@ -109,14 +112,17 @@ var core = {
 	,playPaused:function () {
 		this.statusImg.src = "img/pause.png";
 		this.statusStr.innerHTML = "已暂停...";
+		this.playerStatus = "paused";
 	}
 	,playWaiting:function () {
 		this.statusImg.src = "img/pause.png";
 		this.statusStr.innerHTML = "等待中...";
+		this.playerStatus = "waiting";
 	}
 	,playPlaying:function () {
 		this.statusImg.src = "img/play.gif";
-		this.statusStr.innerHTML = "正在播放开始于 "+this.formatStr(this.getResponseFilenameFromUrl(this.playlist[this.currentIndex]))+ " 的视频文件...";
+		this.playerStatus = "playing";
+		displayTrueTimeStr();
 	}
 	//inititally get the playerId
 	,getPlayerId:function (replacePlayerId) {
@@ -145,6 +151,10 @@ var core = {
 	}
 	,getPaginatorId:function (paginatorId) {
 		this.paginatorId = paginatorId;
+	}
+	,getJumpId:function (jumpMinId , jumpSecId) {
+		this.jumpMinId = jumpMinId;
+		this.jumpSecId = jumpSecId;
 	}
 	//Use RegEx to split filename
 	,getResponseFilenameFromUrl:function (url) {
@@ -202,6 +212,27 @@ var core = {
 		var SS = filename.substring(12,14);
 		return YYYY+MM+DD+HH+II+SS;
 	}
+	,displayTimeStr:function (filename , seconds) {
+		var YYYY = filename.substring(0,4)+"-";
+		var MM = filename.substring(4,6)+"-";
+		var DD = filename.substring(6,8)+" ";
+		var HH = filename.substring(8,10)+":";
+		var IIInt = parseInt(filename.substring(10,12))+parseInt(parseInt(seconds)/60);
+		var II;
+		if(IIInt<10){
+			II = "0"+IIInt+":";
+		}else{
+			II = IIInt+":";
+		}
+		var SSInt = parseInt(filename.substring(12,14))+parseInt(parseInt(seconds)%60);
+		var SS;
+		if(SSInt<10){
+			SS = "0"+SSInt;
+		}else{
+			SS = SSInt;
+		}
+		return YYYY+MM+DD+HH+II+SS;
+	}
 	//as it shows,it just play
 	,doPlay:function (){
 		//get the header & split the filename
@@ -245,6 +276,29 @@ var core = {
 	,doDownload:function () {
 		ajaxDownload();
 	}
+	,jumpTo:function () {
+		var inputMin = $('#'+this.jumpMinId).val();
+		var inputSec = $('#'+this.jumpSecId).val()
+		if(inputMin != "" && inputSec != ""){
+			if(inputMin >= 0 && inputMin <= 59){
+				if(inputSec >= 0 && inputSec <= 59){
+					var jumpBySeconds = parseInt(inputMin)*60 + parseInt(inputSec);
+					if(jumpBySeconds < this.playerInstance.duration()){
+						console.info(this.playerInstance.duration());
+						this.playerInstance.currentTime(jumpBySeconds);
+					}else{
+						alert("输入的跳转到时间超过媒体长度！");
+					}
+				}else{
+					alert("请输入合法的跳转到时间！");
+				}
+			}else{
+				alert("请输入合法的跳转到时间！");
+			}
+		}else{
+			alert("请输入需要跳转到的时间点！");
+		}
+	}
 	//get selected date info
 	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId) {
 		var receivedStartYYYYMMDDHHII = this.getStartYYYYMMDDHHII(startYYYYMMDDHHIIId);
@@ -261,22 +315,35 @@ var core = {
 				this.requestedEndTimeStr = receivedEndDateStr;
 				return 1;
 			}else{
-				return 0;
 				alert("请输入合法的日期区间！");
+				return 0;
 			}
 		}else{
-			return 0;
 			alert("请输入合法的日期区间！");
+			return 0;
 		}
 		
 	}
 	,getStartYYYYMMDDHHII:function (replaceStartYYYYMMDDHHIIId) {
-		// body...
-		var receivedStartYYYYMMDDHHII = $('#'+replaceStartYYYYMMDDHHIIId).val();
-		if(receivedStartYYYYMMDDHHII !=""){
-			return receivedStartYYYYMMDDHHII;
+		if($('#'+replaceStartYYYYMMDDHHIIId).val() == ""){
+			alert("请选择起始日期!");
+			return '0';
+		}
+		var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2})$/; 
+		var r = $('#'+replaceStartYYYYMMDDHHIIId).val().match(reg); 
+		if(r==null){
+			alert("日期时间不匹配!");
+			return '0'; 
+		}
+		var d= new Date(r[1], r[3]-1,r[4],r[5],r[6]); 
+		var receivedStartYYYYMMDDHHII;
+		if(d.getFullYear()==r[1]&&(d.getMonth()+1)==r[3]&&d.getDate()==r[4]&&d.getHours()==r[5]&&d.getMinutes()==r[6]){
+			receivedStartYYYYMMDDHHII=r[1]+r[3]+r[4]+r[5]+r[6];
+			if(receivedStartYYYYMMDDHHII !=""){
+				return receivedStartYYYYMMDDHHII;
+			}
 		}else{
-			alert("请选择起始日期！");
+			alert("日期时间非法！");
 			//return a invalid value
 			return '0';
 		}
@@ -303,13 +370,26 @@ var core = {
 		
 	}
 	,getEndYYYYMMDDHHII:function (replaceEndYYYYMMDDHHIIId) {
-		// body...
-		var receivedEndYYYYMMDDHHII = $('#'+replaceEndYYYYMMDDHHIIId).val();
-		if(receivedEndYYYYMMDDHHII !=""){
-			return receivedEndYYYYMMDDHHII;
-		}else{
-			alert("请选择结束日期！");
+		if($('#'+replaceEndYYYYMMDDHHIIId).val() == ""){
+			alert("请选择结束日期!");
 			return '0';
+		}
+		var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2})$/; 
+		var r = $('#'+replaceEndYYYYMMDDHHIIId).val().match(reg); 
+		if(r==null){
+			alert("日期时间不匹配!");
+			return '0'; 
+		}
+		var d= new Date(r[1], r[3]-1,r[4],r[5],r[6]); 
+		var receivedEndYYYYMMDDHHII;
+		if(d.getFullYear()==r[1]&&(d.getMonth()+1)==r[3]&&d.getDate()==r[4]&&d.getHours()==r[5]&&d.getMinutes()==r[6]){
+			receivedEndYYYYMMDDHHII=r[1]+r[3]+r[4]+r[5]+r[6];
+			if(receivedEndYYYYMMDDHHII !=""){
+				return receivedEndYYYYMMDDHHII;
+			}
+		}else{
+			alert("日期时间非法!");
+			return '0'
 		}
 	}
 	,getEndSec:function (replaceEndSecId) {
@@ -380,6 +460,12 @@ var core = {
 /*
 Global track controlling
 */
+function displayTrueTimeStr () {
+	if(core.playerStatus == "playing"){
+		core.statusStr.innerHTML = "当前播放 "+core.displayTimeStr(core.getResponseFilenameFromUrl(core.playlist[core.currentIndex]),core.playerInstance.currentTime());
+		var t = setTimeout("displayTrueTimeStr()",500);
+	}
+}
 /*
 this timedCount call itself once per second if matched the given conditions
 after dragging the slide bar,its location info was lost
@@ -421,50 +507,61 @@ function ajaxRequest () {
 					//Split the response array into two lists
 					//---------Test data------------------------------------------------- 
 					/*
-					var responseList = ["play1","play2","play3","play4","play5","play6",
-										"down1","down2","down3","down4","down5","down6"];
+					var responseList = ["play1","play2","play3","play4","play5","play6","play7","play8","play9","play10","play11",
+										"down1","down2","down3","down4","down5","down6","down7","down8","down9","down10","down11"];
 					*/
 					var responseList = eval ("(" + httpReq.responseText + ")");
-					for(i = 0 ; i < responseList.length/2 ; i++ ){
-						core.playlist[i]=responseList[i];
-					}
-					for(i = responseList.length/2 , j=0 ; i < responseList.length ; i++ ,j++){
-						core.downloadlist[j]=responseList[i];
-					}
-					/*
-					//---------Debug info-------------
-					console.info(core.downloadlist);
-					console.info(core.playlist);
-					*/
-				    core.statusImg.src = "img/placeholder.png";
-				    core.statusStr.innerHTML = "";
-				    /*
-				    Calculating page info
-				    */
-					if(core.playlist.length %10 == 0 ){
-						core.totalPages = parseInt(core.playlist.length / 10);
-					}else{
-						core.totalPages = parseInt(core.playlist.length /10 +1);
-					}
-					//Setting paginator
-					var options = {
-						currentPage: 1,
-					    totalPages:core.totalPages,
-					}
-					$('#'+core.paginatorId).bootstrapPaginator(options);
-					$('#'+core.paginatorId).show();
-					var listviewStr="";
-					//first page list
-					if(core.totalPages > 1){
-						for(i=0;i<10;i++){
-							listviewStr += core.generateRowCell(core.playlist[i],i);
+					//clear list to none
+					core.playlist=[];
+					core.downloadlist=[];
+					if(responseList.length>0){
+						for(i = 0 ; i < responseList.length/2 ; i++ ){
+							core.playlist[i]=responseList[i];
 						}
-					}else{
-						for(i=0;i<core.playlist.length;i++){
-							listviewStr += core.generateRowCell(core.playlist[i],i);
+						for(i = responseList.length/2 , j=0 ; i < responseList.length ; i++ ,j++){
+							core.downloadlist[j]=responseList[i];
 						}
+						/*
+						//---------Debug info-------------
+						console.info(core.downloadlist);
+						console.info(core.playlist);
+						*/
+					    core.statusImg.src = "img/placeholder.png";
+					    core.statusStr.innerHTML = "";
+					    /*
+					    Calculating page info
+					    */
+						if(core.playlist.length %10 == 0 ){
+							core.totalPages = parseInt(core.playlist.length / 10);
+						}else{
+							core.totalPages = parseInt(core.playlist.length /10 +1);
+						}
+						//Setting paginator
+						var options = {
+							currentPage: 1,
+						    totalPages:core.totalPages,
+						}
+						$('#'+core.paginatorId).bootstrapPaginator(options);
+						$('#'+core.paginatorId).show();
+						var listviewStr="";
+						//first page list
+						if(core.totalPages > 1){
+							for(i=0;i<10;i++){
+								listviewStr += core.generateRowCell(core.playlist[i],i);
+							}
+						}else{
+							for(i=0;i<core.playlist.length;i++){
+								listviewStr += core.generateRowCell(core.playlist[i],i);
+							}
+						}
+						document.getElementById(core.playlistviewId).innerHTML = listviewStr;
+					}else{
+						core.statusImg.src = "img/placeholder.png";
+					    core.statusStr.innerHTML = "没有找到请求的视频文件！";
 					}
-					document.getElementById(core.playlistviewId).innerHTML = listviewStr;
+			   }else{
+			   		core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
+			   		core.statusImg.src = "img/error.png";
 			   }
 		}
 		var postData = "start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
@@ -499,6 +596,9 @@ function ajaxDownload () {
 					core.downloadId = returnId;
 					check();
 				}
+			}else{
+			   	core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
+			   	core.statusImg.src = "img/error.png";
 			}
 		}
 		var getData = "?start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
@@ -547,6 +647,9 @@ function checkIfMerged () {
 				if(returnValue != ""){
 					core.downloadStatus = returnValue;
 				}
+			}else{
+			   	core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
+			   	core.statusImg.src = "img/error.png";
 			}
 		}
 		var postData = "task_id="+core.downloadId;

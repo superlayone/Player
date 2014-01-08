@@ -64,6 +64,7 @@
           core.getDeviceId("deviceId");
 		  core.getPlaylistviewId("playlistview");
 		  core.getPaginatorId("pageV");
+		  core.getJumpId("jumpMin","jumpSec");
       });
     </script>
 > datetimepicker控件样式的定义

@@ -7,10 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Test template">
     <meta name="author" content="Layone">
-    <!--link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"-->
-
     <title>视频点播系统</title>
-
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
@@ -53,48 +50,63 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">主页</a></li>
-            <li><a href="#conditions" class="smoothScroll">Conditions and Limitations</a></li>
             <li><a href="#API"  class="smoothScroll">API方法</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
     <div class="container theme-showcase">
-        <div class="page-header">
-        </div>
-        <div class="playerbody center-block">
+        <div class="row playerbody">
+          <div class="col-lg-7">
             <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
-              controls preload="auto" width="800" height="400"
-              poster="img/default_poster2.jpg"
-              data-setup='{}'
-              onended="core.playEnded()"
-              onwaiting="core.playWaiting()"
-              onplaying="core.playPlaying()"
-              onpause="core.playPaused()">
-             <source src="" type='video/mp4' />
+                    controls preload="auto" width="640" height="470"
+                    poster="img/default_poster2.jpg"
+                    data-setup='{}'
+                    onended="core.playEnded()"
+                    onwaiting="core.playWaiting()"
+                    onplaying="core.playPlaying()"
+                    onpause="core.playPaused()">
+                   <source src="" type='video/mp4' />
             </video>
+          </div>
+          <div class="col-lg-5">
+            <div class="listarea panel panel-info">
+            <table id="playlistview" class="table table-striped table-hover">
+            </table>
+            <div class="pageDiv">
+                <ul id='pageV'></ul>
+            </div>
+          </div>
+          </div>
         </div>
-        <div class="panel panel-info">
+        <div class="panel panel-info test3">
           <div class="panel-heading">状态信息</div>
           <div class="panel-body">
             <div class="panel">
-              <form class="form-inline" role="form">
-                  <div class="form-group">
-                    <img id="statusImg" src="img/placeholder.png">
+              <div class="row">
+                  <div class="col-lg-2">
+                    <img id="statusImg" src="img/placeholder.png" width="48" height="48">
                   </div>
-                  <div class="form-group">
+                  <div class="col-lg-5">
                     <p id="statusStr"></p>
                   </div>
-              </form>
+                  <div class="col-lg-4">
+                    <form class="form-inline pull-right" role="form">
+                      <div class="form-group">
+                        <input type="number" class="form-control" id="jumpMin"  max="59" min="0" value="0" >
+                      </div>
+                      <button type="button" class="btn btn-success" disabled="disabled">分</button>
+                      <div class="form-group">
+                        <input type="number" class="form-control" id="jumpSec"  max="59" min="0" value="0" >
+                      </div>
+                      <button type="button" class="btn btn-success" disabled="disabled">秒</button>
+                    </form>
+                  </div>
+                  <div class="col-lg-1">
+                    <button type="button"  class="btn btn-primary pull-right" onclick="core.jumpTo()">快速跳转</button>
+                  </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="panel panel-info">
-          <table id="playlistview" class="table table-striped table-hover">
-          </table>
-          <div class="page">
-              <ul id='pageV'></ul>
           </div>
         </div>
         <div class="panel panel-primary">
@@ -104,7 +116,7 @@
             <div class="panel">
               <form class="form-inline" role="form">
                   <div class="form-group">
-                    <input size="40" type="text" readonly class="form_datetime form-control col-md-5" id="startYYYYMMDDHHII" placeholder="点击选择起始时间(精确到分钟)">
+                    <input size="50" type="text"  class="form_datetime form-control col-md-5" id="startYYYYMMDDHHII" placeholder="点击选择起始时间,或直接输入(如:2014-01-01 12:12)">
                   </div>
                   <div class="form-group">
                     <input type="number" size="5" class="form-control" id="startSec"  max="59" min="0" value="0" >
@@ -117,7 +129,7 @@
             <div class="panel">
               <form class="form-inline" role="form">
                   <div class="form-group">
-                    <input size="40" type="text" readonly class="form_datetime form-control col-md-5" id="endYYYYMMDDHHII" placeholder="点击选择结束时间(精确到分钟)">
+                    <input size="50" type="text"  class="form_datetime form-control col-md-5" id="endYYYYMMDDHHII" placeholder="点击选择结束时间,或直接输入(如:2014-01-01 12:12)">
                   </div>
                   <div class="form-group">
                     <input type="number" size="5" class="form-control" id="endSec"  max="59" min="0" value="0">
@@ -132,22 +144,11 @@
             </div>
         </div>
         </div>
-        <div class="page-header" id="conditions">
-          <h2>Conditions and Limitations</h2>
-        </div>
-        <div class="alert alert-danger">
-          <p>(A) No Trademark License.This license does not grant you rights to use any contributors' name, logo, or trademarks.</p>
-          <p>(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.</p>
-          <p>(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.</p>
-          <p>(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.</p>
-          <p>(E) Layone hold the master version.</p>
-          
-        </div>
         <div class="page-header" id="API">
           <h2>API方法</h2>
         </div>
         <div class="alert alert-success">
-          <p>&middot;项目目录下的API Markdown文件给出了详细的API说明，我们亦给出了API方法的PDF版本<a href="API.pdf" target="_blank">API.pdf</a></p>
+          <p>&middot;项目目录Player文件夹下的API Markdown文件给出了详细的API说明，我们亦给出了API方法的PDF版本<a href="API.pdf" target="_blank">API.pdf</a></p>
           <p>&middot;API文档包含了video标签的播放器核心js调用方法和控制逻辑core.js的方法</p>
           <p>&middot;API文档亦给出了嵌入HTML的方法</p>
           <p>&middot;若继续使用Bootstarp前端框架，该文档也给出了简要的框架引入方法</p>
@@ -159,7 +160,7 @@
         </div>
         <footer>
           <p class="pull-right"><a href="#" class="smoothScroll">Back to top</a></p>
-          <p>&copy;All Rights Reserved!Layone 2013 . &middot; <a href="#conditions" > Privacy</a> &middot; <a href="#">Terms of Use</a></p>
+          <p>&copy;All Rights Reserved!&middot; <a href="#conditions" > Privacy</a> &middot; <a href="#">Terms of Use</a></p>
         </footer>
         <!-- Footer end
           ================================================== -->
@@ -188,7 +189,7 @@
     <!--For define datatime picker style -->
     <script type="text/javascript">
     $(".form_datetime").datetimepicker({
-        format: "yyyymmddhhii",
+        format: "yyyy-mm-dd hh:ii",
         language:"zh-CN",
         autoclose: true,
         todayBtn: true,
@@ -213,6 +214,7 @@
           core.getDeviceId("deviceId");
           core.getPlaylistviewId("playlistview");
           core.getPaginatorId("pageV");
+          core.getJumpId("jumpMin","jumpSec");
       });
     </script>
     <script>
