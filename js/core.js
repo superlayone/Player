@@ -177,6 +177,7 @@ var core = {
 	,queryList:function() {
 		//console.info(id);
 		ajaxRequest();
+		window.scrollTo(0,0);
 	}
 	,getPage:function (page) {
 		var listviewStr="";
@@ -558,6 +559,8 @@ function ajaxRequest () {
 					}else{
 						core.statusImg.src = "img/placeholder.png";
 					    core.statusStr.innerHTML = "没有找到请求的视频文件！";
+					    $('#'+core.paginatorId).hide();
+					    document.getElementById(core.playlistviewId).innerHTML = "";
 					}
 			   }else{
 			   		core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
@@ -596,9 +599,6 @@ function ajaxDownload () {
 					core.downloadId = returnId;
 					check();
 				}
-			}else{
-			   	core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
-			   	core.statusImg.src = "img/error.png";
 			}
 		}
 		var getData = "?start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr+"&port_id="+core.requestedDeviceStr;
@@ -647,9 +647,6 @@ function checkIfMerged () {
 				if(returnValue != ""){
 					core.downloadStatus = returnValue;
 				}
-			}else{
-			   	core.statusStr.innerHTML = "与服务器交互过程中出现异常！";
-			   	core.statusImg.src = "img/error.png";
 			}
 		}
 		var postData = "task_id="+core.downloadId;
