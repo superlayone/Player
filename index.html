@@ -14,6 +14,8 @@
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- Bootstrap datetimepicker -->
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <!-- Bootstarp select-->
+    <link href="css/select2.css" rel="stylesheet">
     <!-- template -->
     <link href="css/theme.css" rel="stylesheet">
     <!--video css-->
@@ -58,9 +60,9 @@
     <div class="container theme-showcase">
         <div class="row playerbody">
           <div class="col-lg-7">
-            <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered" 
+            <video id="vjsplayer" class="video-js vjs-default-skin vjs-big-play-centered shadow" 
                     controls preload="auto" width="640" height="470"
-                    poster="img/default_poster2.jpg"
+                    poster="img/default_poster.jpg"
                     data-setup='{}'
                     onended="core.playEnded()"
                     onwaiting="core.playWaiting()"
@@ -79,7 +81,7 @@
           </div>
           </div>
         </div>
-        <div class="panel panel-info test3">
+        <div class="panel panel-primary test3">
           <div class="panel-heading">状态信息</div>
           <div class="panel-body">
             <div class="panel">
@@ -87,19 +89,19 @@
                   <div class="col-lg-2">
                     <img id="statusImg" src="img/placeholder.png" width="48" height="48">
                   </div>
-                  <div class="col-lg-5">
+                  <div class="col-lg-3">
                     <p id="statusStr"></p>
                   </div>
-                  <div class="col-lg-4">
+                  <div class="col-lg-6">
                     <form class="form-inline pull-right" role="form">
                       <div class="form-group">
                         <input type="number" class="form-control" id="jumpMin"  max="59" min="0" value="0" >
                       </div>
-                      <button type="button" class="btn btn-success" disabled="disabled">分</button>
+                      <button type="button" class="btn btn-default" disabled="disabled">分</button>
                       <div class="form-group">
                         <input type="number" class="form-control" id="jumpSec"  max="59" min="0" value="0" >
                       </div>
-                      <button type="button" class="btn btn-success" disabled="disabled">秒</button>
+                      <button type="button" class="btn btn-default" disabled="disabled">秒</button>
                     </form>
                   </div>
                   <div class="col-lg-1">
@@ -121,8 +123,8 @@
                   <div class="form-group">
                     <input type="number" size="5" class="form-control" id="startSec"  max="59" min="0" value="0" >
                   </div>
-                  <button type="button" class="btn btn-success" disabled="disabled">秒</button>
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.queryList()">查询</button>
+                  <button type="button" class="btn btn-default" disabled="disabled">秒</button>
+                  <button id="btnQuery" type="button"  class="btn btn-primary pull-right" onclick="core.queryList()" disabled="disabled">查询</button>
               </form>
             </div>
             <!--End time-->
@@ -134,12 +136,12 @@
                   <div class="form-group">
                     <input type="number" size="5" class="form-control" id="endSec"  max="59" min="0" value="0">
                   </div>
-                  <button type="button"  class="btn btn-success" disabled="disabled">秒</button>
-                  <button type="button"  class="btn btn-default" disabled="disabled">设备编号</button>
-                  <div class="form-group">
-                    <input size="5" type="number" class="form-control" id="deviceId"  max="2" min="0" value="0">
-                  </div> 
-                  <button type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()">下载</button>
+                  <button type="button"  class="btn btn-default" disabled="disabled">秒</button>
+                  <div width="100px" class="select2-container">
+                    <input id="deviceId">
+                  </div>
+                  <button id="getDeviceId" type="button"  class="btn btn-primary" onclick="core.getDevice()">获取设备编号</button>
+                  <button id="btnDownload" type="button"  class="btn btn-primary pull-right" onclick="core.doDownload()" disabled="disabled">下载</button>
               </form>
             </div>
         </div>
@@ -147,7 +149,7 @@
         <div class="page-header" id="API">
           <h2>API方法</h2>
         </div>
-        <div class="alert alert-success">
+        <div class="alert alert-info">
           <p>&middot;项目目录Player文件夹下的API Markdown文件给出了详细的API说明，我们亦给出了API方法的PDF版本<a href="API.pdf" target="_blank">API.pdf</a></p>
           <p>&middot;API文档包含了video标签的播放器核心js调用方法和控制逻辑core.js的方法</p>
           <p>&middot;API文档亦给出了嵌入HTML的方法</p>
@@ -179,6 +181,9 @@
     <script src="js/smoothscroll.js"></script>
     <!--For pagination-->
     <script src="js/bootstrap-paginator.js"></script>
+    <!--For select2-->
+    <script src="js/select2.js"></script>
+    <script src="js/locales/select2_locale_zh-CN.js"></script>
     <!--For bootstarp datetime picker -->
     <script src="js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
@@ -215,6 +220,9 @@
           core.getPlaylistviewId("playlistview");
           core.getPaginatorId("pageV");
           core.getJumpId("jumpMin","jumpSec");
+          $("#deviceId").select2({placeholder: "请点击按钮获取列表->",
+          data:[]
+        });
       });
     </script>
     <script>

@@ -24,3 +24,13 @@ body {
   color:#555555;
   padding: 0 0 0 0;
 }
+.shadow{
+  width:auto;
+  height:auto;
+  background:#fff;
+  color:#333;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#909090,direction=120,strength=4);/*ie*/
+  -moz-box-shadow: 5px 5px 10px #909090;/*firefox*/
+  -webkit-box-shadow: 5px 5px 10px #909090;/*safari或chrome*/
+  box-shadow:5px 5px 10px #909090;/*opera或ie9*/
+}

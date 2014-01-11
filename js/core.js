@@ -34,6 +34,7 @@ var core = {
 	playerId:""
 	,playlist:[]
 	,downloadlist:[]
+	,deviceList:[]
 	,playListview:""
 	,currentIndex:0
 	,currentPlaying:""
@@ -50,11 +51,11 @@ var core = {
 	,deviceId:""
 	,jumpMinId:""
 	,jumpSecId:""
-	,requestedStartTimeStr:"20131217103255"
-	,requestedEndTimeStr:"20131217103305"
-	,requestedDeviceStr:"192.168.0.1"
+	,requestedStartTimeStr:""
+	,requestedEndTimeStr:""
+	,requestedDeviceStr:""
 	//When deployed in server,set to empty
-	,serverAddress:""
+	,serverAddress:"219.245.64.108"
 	,downloadStatus:"None"
 	,downloadId:""
 	,playerStatus:""
@@ -204,6 +205,10 @@ var core = {
 				</td></tr>';
 		return rowStr;
 	}
+	,generateListOptions:function (value) {
+		var optionStr = '<option>'+value+'</option>';
+		return optionStr;
+	}
 	,formatStr:function (filename) {
 		var YYYY = filename.substring(0,4)+"-";
 		var MM = filename.substring(4,6)+"-";
@@ -301,14 +306,13 @@ var core = {
 		}
 	}
 	//get selected date info
-	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId,deviceId) {
+	,getDatetimepickerStr:function (startYYYYMMDDHHIIId,startSecId,endYYYYMMDDHHIIId,endSecId) {
 		var receivedStartYYYYMMDDHHII = this.getStartYYYYMMDDHHII(startYYYYMMDDHHIIId);
 		var receivedEndYYYYMMDDHHII = this.getEndYYYYMMDDHHII(endYYYYMMDDHHIIId);
 		
 		if(receivedStartYYYYMMDDHHII !='0' && receivedEndYYYYMMDDHHII !='0'){
 			var receivedStartDateStr = receivedStartYYYYMMDDHHII+this.getStartSec(startSecId);
 			var receivedEndDateStr = receivedEndYYYYMMDDHHII+this.getEndSec(endSecId);
-			this.requestedDeviceStr = this.getDevice(deviceId);
 			//alert(receivedStartDateStr+"-->"+receivedEndDateStr);
 			if(receivedStartDateStr < receivedEndDateStr){
 				//The end time stamp must gteater than the start one
@@ -409,21 +413,16 @@ var core = {
 		}
 	}
 	,getDevice:function (deviceId) {
-		var receivedDevice = $('#'+deviceId).val();
-		switch(receivedDevice){
-			case '0':
-			  return "192.168.0.1" ;
-			  break;
-			case '1':
-			  return "192.168.0.2" ;
-			  break;
-			case '2':
-			  return "192.168.0.3" ;
-			  break;
-			default:
-			  alert("请输入合法的设备编号，已选择使用默认值0！");
-			  document.getElementById(deviceId).value= 0;
-			  return "192.168.0.1";
+		ajaxRequestDevice();
+		//console.info($('#'+core.deviceId).select2("val"));
+	}
+	,getSelectedDevice:function () {
+		if($('#'+core.deviceId).select2("val") != ""){
+			this.requestedDeviceStr = this.deviceList[$('#'+core.deviceId).select2("val")];
+			return 1;
+		}else{
+			alert("请选择设备号！")
+			return 0;
 		}
 	}
 	/*
@@ -495,7 +494,7 @@ as the whole project is based on HTML5 technology,so we just build a XMLHttpRequ
 the return value is in JSON format
 */
 function ajaxRequest () {
-	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId,core.deviceId)){
+	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId) && core.getSelectedDevice()){
 		var httpReq;
 		if (window.XMLHttpRequest){
 			// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -585,7 +584,7 @@ function ajaxDownload () {
 	user maybe change the time interval,
 	so re-get these values again
 	*/
-	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId,core.deviceId)){
+	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId) && core.getSelectedDevice()){
 		var httpDownloadReq;
 		if(window.XMLHttpRequest){
 			httpDownloadReq = new XMLHttpRequest();
@@ -610,6 +609,55 @@ function ajaxDownload () {
 	}
 }
 /*
+request device list
+If not null,also enable the buttons
+*/
+function ajaxRequestDevice () {
+	if(core.getDatetimepickerStr(core.startYYYYMMDDHHIIId,core.startSecId,core.endYYYYMMDDHHIIId,core.endSecId)){
+		var HttpDeviceReq;
+		if(window.XMLHttpRequest){
+			HttpDeviceReq = new XMLHttpRequest();
+		}else{
+			alert("(⊙o⊙)…你这个浏览器弱爆了，赶紧换一个支持HTML5的!");
+		}
+		HttpDeviceReq.onreadystatechange = function(){
+			if(HttpDeviceReq.readyState == 4 && HttpDeviceReq.status == 200){
+				if(HttpDeviceReq.responseText != ""){
+					//save in list
+					core.deviceList = eval ("(" + HttpDeviceReq.responseText + ")");
+					if(core.deviceList.length > 0){
+						var dataStr="";
+						for(i = 0 ; i < core.deviceList.length ; i++){
+							//construct data here
+							dataStr+='{id:'+i+',text:"'+core.deviceList[i]+'"},';
+						}
+						dataStr = '['+dataStr+']';
+						console.info(dataStr);
+						var dataStrToList =  eval ("(" + dataStr + ")");
+						//add select2 list candidates
+						$('#'+core.deviceId).select2({placeholder: "请在以下候选项中选择设备码",data:dataStrToList});
+						//clear info
+						core.statusImg.src = "img/placeholder.png";
+						core.statusStr.innerHTML = "";
+						//enable buttons
+						document.getElementById("btnQuery").disabled=false;
+						document.getElementById("btnDownload").disabled=false;
+					}else{
+						core.statusImg.src = "img/error.png";
+						core.statusStr.innerHTML = "没有找到请求的设备列表！";
+					}
+				}
+			}
+		}
+		var getData = "?start_time="+core.requestedStartTimeStr+"&end_time="+core.requestedEndTimeStr;
+		HttpDeviceReq.open("GET",core.serverAddress+"/port"+getData,true);
+		HttpDeviceReq.send();
+		//change status
+		core.statusImg.src = "img/loading.gif";
+		core.statusStr.innerHTML = "请稍等，正在发送获取设备列表请求...";	
+	}
+}
+/*
 if None,timed count every 3 seconds
 if not,do save as action
 */
@@ -621,7 +669,7 @@ function check () {
 		var t = setTimeout("check()",3000);
 	}else{
 		if(core.checkIfUrl(core.downloadStatus)){
-			core.statusImg.src = "img/downloaded.png";
+			core.statusImg.src = "img/placeholder.png";
 			core.statusStr.innerHTML = "完成拼接，请保存下载的视频文件!";
 			window.location = core.downloadStatus;
 		}else{
